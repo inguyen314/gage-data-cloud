@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <meta name="Description" content="U.S. Army Corps of Engineers St. Louis District Home Page" />
+    <link rel="stylesheet" href="css/body.css" />
+    <link rel="stylesheet" href="css/breadcrumbs.css" />
+    <link rel="stylesheet" href="css/jumpMenu.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="text/javascript" src="js/main.js"></script>
+    <!-- Add sidebar.css IF NOT LOAD SIDEBAR TEMPLATE -->
+    <link rel="stylesheet" href="css/sidebar.css" />
+    <!-- Include Moment.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <!-- Include the Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include the Moment.js adapter for Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+</head>
+
+<body>
+    <div id="page-container">
+        <header id="header">
+            <!--Header content populated here by JavaScript Tag at end of body -->
+        </header>
+        <div class="page-wrap">
+            <div class="container-fluid">
+                <div id="breadcrumbs">
+                </div>
+                <div class="page-content">
+                    <sidebar id="sidebar"></sidebar>
+                    <div id="topPane" class="col-md backend-cp-collapsible">
+                        <div class="box-usace">
+                            <h2 class="box-header-striped">
+                                <span class="titleLabel title">Title</span>
+                                <span class="rss"></span>
+                            </h2>
+                            <div class="box-content" style="background-color:white;margin:auto">
+                                <div class="content">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Setup url parameters -->
+                <script>
+                    // Create a URL object with the current page URL
+                    const urlParams = new URLSearchParams(window.location.search);
+
+                    const param5Value = urlParams.get('office');
+                    var office = urlParams.get('office');
+                    console.log('office: ', office);
+
+                    // Calculate the document root
+                    const documentRoot = window.location.protocol + "//" + window.location.host + "/";
+
+                    // Determine the default value of cda based on documentRoot
+                    const cdaDefault = (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    console.log("cdaDefault: ", cdaDefault);
+
+                    // Determine the default value of cda based on documentRoot
+                    const typeDefault = (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    console.log("typeDefault: ", typeDefault);
+
+                    // Get the value of a specific parameter
+                    const param2Value = urlParams.get('cda');
+                    var cda = urlParams.get('cda') || cdaDefault;
+                    console.log('cda: ', cda);
+
+                    const param4Value = urlParams.get('type');
+                    var type = urlParams.get('type') || typeDefault;
+                    console.log('type: ', type);
+
+                    const param1Value = urlParams.get('basin');
+                    var basin = urlParams.get('basin') || 'Mississippi';
+                    console.log('basin: ', basin);
+
+                    const param3Value = urlParams.get('gage');
+                    var gage = urlParams.get('gage');
+                    console.log('gage: ', gage);
+                </script>
+
+                <!-- Basin Selection -->
+                <div id="container"></div>
+                <script>
+                    if (gage === null) {
+                        // Create table element
+                        var table = document.createElement('table');
+                        table.id = 'basins';
+
+                        // Create tbody element
+                        var tbody = document.createElement('tbody');
+                        table.appendChild(tbody);
+
+                        // Create tr element
+                        var tr = document.createElement('tr');
+                        tbody.appendChild(tr);
+
+                        // Create th elements
+                        for (var i = 0; i < 3; i++) {
+                            var th = document.createElement('th');
+                            th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            tr.appendChild(th);
+                        }
+
+                        let basins = null;
+
+                        let apiUrl = null;
+                        if (cda === "internal") {
+                            apiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+                        } else if (cda === "public") {
+                            apiUrl = `https://cwms-data.usace.army.mil/cwms-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+                        }
+                        fetch(apiUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (!Array.isArray(data) || data.length === 0) {
+                                    console.warn('No data available from the initial fetch.');
+                                    return;
+                                }
+
+                                console.log('Data fetched:', data);
+
+                                const targetCategory = { "office-id": office, "id": "Basins" };
+
+                                function filterByLocationCategory(array, category) {
+                                    return array.filter(item =>
+                                        item['location-category'] &&
+                                        item['location-category']['office-id'] === category['office-id'] &&
+                                        item['location-category']['id'] === category['id']
+                                    );
+                                }
+
+                                const filteredArray = filterByLocationCategory(data, targetCategory);
+                                console.log(filteredArray);
+
+                                // Extract the "id" values from each object
+                                basins = filteredArray.map(item => item.id);
+                                if (basins.length === 0) {
+                                    console.warn('No basins found for the given category.');
+                                    return;
+                                }
+
+                                console.log("basins: ", basins);
+
+                                let basinsOrder = null;
+                                if (office === "MVS") {
+                                    basinsOrder = ['Mississippi', 'Ohio', 'Salt', 'Cuivre', 'Illinois', 'Missouri', 'Meramec', 'Kaskaskia', 'Big Muddy', 'Castor', 'St Francis'];
+                                }
+
+                                // Create a lookup object
+                                const orderMap = Object.fromEntries(basinsOrder.map((basin, index) => [basin, index]));
+
+                                // Sort basins based on the order in basinsOrder
+                                const sortedBasins = basins.sort((a, b) => orderMap[a] - orderMap[b]);
+
+                                console.log("sortedBasins: ", sortedBasins);
+
+                                basins = sortedBasins;
+
+                                if (cda === "public") {
+                                    for (var i = 0; i < basins.length; i++) {
+                                        var th = document.createElement('th');
+                                        var link = document.createElement('a');
+                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=public";
+                                        link.innerHTML = '<strong>' + basins[i] + '</strong>';
+                                        var p = document.createElement('p');
+                                        p.appendChild(link);
+                                        th.appendChild(p);
+                                        tr.appendChild(th);
+                                    }
+                                } else if (cda === "internal") {
+                                    for (var i = 0; i < basins.length; i++) {
+                                        var th = document.createElement('th');
+                                        var link = document.createElement('a');
+                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=internal";
+                                        link.innerHTML = '<strong>' + basins[i] + '</strong>';
+                                        var p = document.createElement('p');
+                                        p.appendChild(link);
+                                        th.appendChild(p);
+                                        tr.appendChild(th);
+                                    }
+                                } else {
+
+                                }
+
+
+                                // Create th elements for remaining spaces
+                                for (var i = 0; i < 2; i++) {
+                                    var th = document.createElement('th');
+                                    th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                    tr.appendChild(th);
+                                }
+
+                                // Append table to the container div<strong>May 2024 - Version V2.1</strong> - gage_control3.json was used <br> 
+                                document.getElementById('container').appendChild(table);
+                            });
+                    }
+                </script>
+
+                <!-- Report Container -->
+                <div id="loading_json" style="display: none;"><img src="images/loading4.gif"
+                        style='height: 50px; width: 50px;' alt="Loading..." /></div>
+                <div id="table_container_gage_data_cda"></div>
+                <script src="gage_data.js"></script>
+            </div>
+            <button id="returnTop" title="Return to Top of Page">Top</button>
+        </div>
+    </div>
+    <footer id="footer">
+        <!--Footer content populated here by script tag at end of body -->
+    </footer>
+    <script src="js/libraries/jQuery-3.3.6.min.js"></script>
+    <script defer>
+        // When the document has loaded pull in the page header and footer skins
+        $(document).ready(function () {
+            $('#header').load('templates/DISTRICT.header.html');
+            $('#footer').load('templates/DISTRICT.footer.html');
+        })
+    </script>
+</body>
+
+</html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Create a URL object with the current page URL
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Get the value of a specific parameter
+        const param1Value = urlParams.get('basin');
+        const param3Value = urlParams.get('cda');
+        const param4Value = urlParams.get('type');
+
+        urlParams.forEach(function (value, key) {
+            console.log(key, value);
+        });
+
+        // Set the title and the span content based on the 'type' parameter
+        const type = urlParams.get('type');
+        // title = "Gage Data" + " - " + urlParams.get('basin') + " - " + urlParams.get('cda');
+        title = office + " - " + "Realtime Gage Data - " + " " + basin;
+
+        if (title) {
+            document.title = title;
+            const titleSpan = document.querySelector('.titleLabel.title');
+            if (titleSpan) {
+                titleSpan.textContent = title + "";
+            }
+        }
+
+        // Add the current date and time to the span with class 'last-modified'
+        const lastModifiedSpan = document.querySelector('.last-modified');
+        if (lastModifiedSpan) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}`;
+            lastModifiedSpan.textContent = `Last Modified: ${formattedDateTime}`;
+        }
+    });
+</script>
