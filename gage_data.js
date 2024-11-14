@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const phycocyaninTsidMap = new Map();
     const speedTsidMap = new Map();
     const ownerMap = new Map();
-    const riverMileMap = new Map();
+    const riverMileHardCodedMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const phycocyaninTsidPromises = [];
     const speedTsidPromises = [];
     const ownerPromises = [];
-    const riverMilePromises = [];
+    const riverMileHardCodedPromises = [];
 
 
     // Fetch the initial data
@@ -158,8 +158,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                             data['assigned-locations'].forEach(loc => {
                                 // console.log('Processing location:', loc['location-id']);
 
-                                if ("metadata" === "metadata") {
-                                    // Construct the URL for the location metadata request
+                                // metadata request
+                                (() => {
                                     let locApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/locations/${loc['location-id']}?office=${office}`;
                                     if (locApiUrl) {
                                         // Push the fetch promise to the metadataPromises array
@@ -185,10 +185,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("flood" === "flood") {
-                                    // Construct the URL for the flood data request
+                                // flood data request
+                                (() => {
                                     let floodApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=${office}&effective-date=2024-01-01T08:00:00&unit=ft`;
                                     if (floodApiUrl) {
                                         // Push the fetch promise to the floodPromises array
@@ -214,10 +214,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-stage" === "tsid-stage") {
-                                    // Construct the URL for the stage tsid data request
+                                // stage tsid data request
+                                (() => {
                                     let stageTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Stage?office=${office}&category-id=${loc['location-id']}`;
                                     if (stageTsidApiUrl) {
                                         stageTsidPromises.push(
@@ -242,10 +242,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-flow" === "tsid-flow") {
-                                    // Construct the URL for the flow tsid data request
+                                // flow tsid data request
+                                (() => {
                                     let flowTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Flow?office=${office}&category-id=${loc['location-id']}`;
                                     if (flowTsidApiUrl) {
                                         flowTsidPromises.push(
@@ -270,10 +270,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-precip" === "tsid-precip") {
-                                    // Construct the URL for the precip tsid data request
+                                // precip tsid data request
+                                (() => {
                                     let precipTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Precip?office=${office}&category-id=${loc['location-id']}`;
                                     if (precipTsidApiUrl) {
                                         precipTsidPromises.push(
@@ -298,10 +298,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-temp-air" === "tsid-temp-air") {
-                                    // Construct the URL for the temp air tsid data request
+                                // temp air tsid data request
+                                (() => {
                                     let tempAirTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Temp-Air?office=${office}&category-id=${loc['location-id']}`;
                                     if (tempAirTsidApiUrl) {
                                         tempAirTsidPromises.push(
@@ -326,10 +326,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-temp-water" === "tsid-temp-water") {
-                                    // Construct the URL for the temp water tsid data request
+                                // temp water tsid data request
+                                (() => {
                                     let tempWaterTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Temp-Water?office=${office}&category-id=${loc['location-id']}`;
                                     if (tempWaterTsidApiUrl) {
                                         tempWaterTsidPromises.push(
@@ -354,10 +354,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-forecast-nws" === "tsid-forecast-nws") {
-                                    // Construct the URL for the forecast nws tsid data request
+                                // forecast nws tsid data request
+                                (() => {
                                     let forecastNwsTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Forecast-NWS?office=${office}&category-id=${loc['location-id']}`;
                                     if (forecastNwsTsidApiUrl) {
                                         tempAirTsidPromises.push(
@@ -382,10 +382,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-speed-wind" === "tsid-speed-wind") {
-                                    // Construct the URL for the temp water tsid data request
+                                // speed wind tsid data request
+                                (() => {
                                     let speedWindTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Speed-Wind?office=${office}&category-id=${loc['location-id']}`;
                                     if (speedWindTsidApiUrl) {
                                         tempWaterTsidPromises.push(
@@ -410,9 +410,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-dir-wind" === "tsid-dir-wind") {
+                                // dir wind tsid data request
+                                (() => {
                                     let dirWindTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Dir-Wind?office=${office}&category-id=${loc['location-id']}`;
                                     if (dirWindTsidApiUrl) {
                                         tempWaterTsidPromises.push(
@@ -437,9 +438,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-do" === "tsid-do") {
+                                // do tsid data request
+                                (() => {
                                     let doTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-DO?office=${office}&category-id=${loc['location-id']}`;
                                     if (doTsidApiUrl) {
                                         doTsidPromises.push(
@@ -464,9 +466,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-depth" === "tsid-depth") {
+                                // depth tsid data request
+                                (() => {
                                     let depthTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Depth?office=${office}&category-id=${loc['location-id']}`;
                                     if (depthTsidApiUrl) {
                                         depthTsidPromises.push(
@@ -491,9 +494,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-cond" === "tsid-cond") {
+                                // cond tsid data request
+                                (() => {
                                     let condTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Cond?office=${office}&category-id=${loc['location-id']}`;
                                     if (condTsidApiUrl) {
                                         condTsidPromises.push(
@@ -518,9 +522,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-ph" === "tsid-ph") {
+                                // ph tsid data request
+                                (() => {
                                     let phTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/pH?office=${office}&category-id=${loc['location-id']}`;
                                     if (phTsidApiUrl) {
                                         phTsidPromises.push(
@@ -545,9 +550,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-turbf" === "tsid-turbf") {
+                                // turbf tsid data request
+                                (() => {
                                     let turbfTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/TurbF?office=${office}&category-id=${loc['location-id']}`;
                                     if (turbfTsidApiUrl) {
                                         turbfTsidPromises.push(
@@ -572,9 +578,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-pressure" === "tsid-pressure") {
+                                // pressure tsid data request
+                                (() => {
                                     let pressureTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Pres?office=${office}&category-id=${loc['location-id']}`;
                                     if (pressureTsidApiUrl) {
                                         pressureTsidPromises.push(
@@ -599,9 +606,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-nitrate" === "tsid-nitrate") {
+                                // nitrate tsid data request
+                                (() => {
                                     let nitrateTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Nitrate?office=${office}&category-id=${loc['location-id']}`;
                                     if (nitrateTsidApiUrl) {
                                         nitrateTsidPromises.push(
@@ -626,9 +634,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-chlorophyll" === "tsid-chlorophyll") {
+                                // chlorophyll tsid data request
+                                (() => {
                                     let chlorophyllTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Chlorophyll?office=${office}&category-id=${loc['location-id']}`;
                                     if (chlorophyllTsidApiUrl) {
                                         chlorophyllTsidPromises.push(
@@ -653,9 +662,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-phycocyanin" === "tsid-phycocyanin") {
+                                // phycocyanin tsid data request
+                                (() => {
                                     let phycocyaninTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Phycocyanin?office=${office}&category-id=${loc['location-id']}`;
                                     if (phycocyaninTsidApiUrl) {
                                         phycocyaninTsidPromises.push(
@@ -680,9 +690,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("tsid-speed" === "tsid-speed") {
+                                // speed tsid data request
+                                (() => {
                                     let speedTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Speed?office=${office}&category-id=${loc['location-id']}`;
                                     if (speedTsidApiUrl) {
                                         speedTsidPromises.push(
@@ -707,9 +718,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("owner" === "owner") {
+                                // owner data request
+                                (() => {
                                     let ownerApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${office}?office=${office}&category-id=${office}`;
                                     if (ownerApiUrl) {
                                         ownerPromises.push(
@@ -735,9 +747,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                         );
                                     }
-                                }
+                                })();
 
-                                if ("river-mile" === "river-mile") {
+                                // river mile data request
+                                (() => {
                                     // Fetch the JSON file
                                     fetch('json/gage_control_official.json')
                                         .then(response => {
@@ -765,14 +778,14 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                     };
 
                                                     console.log("Output Data:", outputData);
-                                                    riverMileMap.set(loc, ownerData); // Store the data in the map
+                                                    riverMileHardCodedMap.set(loc, ownerData); // Store the data in the map
                                                 }
                                             }
                                         })
                                         .catch(error => {
                                             console.error('Problem with the fetch operation:', error);
                                         });
-                                }
+                                })();
                             });
                         }
                     })
@@ -804,121 +817,124 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(phycocyaninTsidPromises))
                 .then(() => Promise.all(speedTsidPromises))
                 .then(() => Promise.all(ownerPromises))
-                .then(() => Promise.all(riverMilePromises))
+                .then(() => Promise.all(riverMileHardCodedPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
                         if (basinData['assigned-locations']) {
                             basinData['assigned-locations'].forEach(loc => {
-                                const metadataMapData = metadataMap.get(loc['location-id']);
-                                if (metadataMapData) {
-                                    loc['metadata'] = metadataMapData;
-                                }
+                                // append data to main basin
+                                (() => {
+                                    const metadataMapData = metadataMap.get(loc['location-id']);
+                                    if (metadataMapData) {
+                                        loc['metadata'] = metadataMapData;
+                                    }
 
-                                const floodMapData = floodMap.get(loc['location-id']);
-                                if (floodMapData) {
-                                    loc['flood'] = floodMapData;
-                                }
+                                    const floodMapData = floodMap.get(loc['location-id']);
+                                    if (floodMapData) {
+                                        loc['flood'] = floodMapData;
+                                    }
 
-                                const stageTsidMapData = stageTsidMap.get(loc['location-id']);
-                                if (stageTsidMapData) {
-                                    loc['tsid-stage'] = stageTsidMapData;
-                                }
+                                    const stageTsidMapData = stageTsidMap.get(loc['location-id']);
+                                    if (stageTsidMapData) {
+                                        loc['tsid-stage'] = stageTsidMapData;
+                                    }
 
-                                const flowTsidMapData = flowTsidMap.get(loc['location-id']);
-                                if (flowTsidMapData) {
-                                    loc['tsid-flow'] = flowTsidMapData;
-                                }
+                                    const flowTsidMapData = flowTsidMap.get(loc['location-id']);
+                                    if (flowTsidMapData) {
+                                        loc['tsid-flow'] = flowTsidMapData;
+                                    }
 
-                                const precipTsidMapData = precipTsidMap.get(loc['location-id']);
-                                if (precipTsidMapData) {
-                                    loc['tsid-precip'] = precipTsidMapData;
-                                }
+                                    const precipTsidMapData = precipTsidMap.get(loc['location-id']);
+                                    if (precipTsidMapData) {
+                                        loc['tsid-precip'] = precipTsidMapData;
+                                    }
 
-                                const tempAirTsidMapData = tempAirTsidMap.get(loc['location-id']);
-                                if (tempAirTsidMapData) {
-                                    loc['tsid-temp-air'] = tempAirTsidMapData;
-                                }
+                                    const tempAirTsidMapData = tempAirTsidMap.get(loc['location-id']);
+                                    if (tempAirTsidMapData) {
+                                        loc['tsid-temp-air'] = tempAirTsidMapData;
+                                    }
 
-                                const tempWaterTsidMapData = tempWaterTsidMap.get(loc['location-id']);
-                                if (tempWaterTsidMapData) {
-                                    loc['tsid-temp-water'] = tempWaterTsidMapData;
-                                }
+                                    const tempWaterTsidMapData = tempWaterTsidMap.get(loc['location-id']);
+                                    if (tempWaterTsidMapData) {
+                                        loc['tsid-temp-water'] = tempWaterTsidMapData;
+                                    }
 
-                                const forecastNwsTsidMapData = forecastNwsTsidMap.get(loc['location-id']);
-                                if (forecastNwsTsidMapData) {
-                                    loc['tsid-forecast-nws'] = forecastNwsTsidMapData;
-                                }
+                                    const forecastNwsTsidMapData = forecastNwsTsidMap.get(loc['location-id']);
+                                    if (forecastNwsTsidMapData) {
+                                        loc['tsid-forecast-nws'] = forecastNwsTsidMapData;
+                                    }
 
-                                const speedWindTsidMapData = speedWindTsidMap.get(loc['location-id']);
-                                if (speedWindTsidMapData) {
-                                    loc['tsid-speed-wind'] = speedWindTsidMapData;
-                                }
+                                    const speedWindTsidMapData = speedWindTsidMap.get(loc['location-id']);
+                                    if (speedWindTsidMapData) {
+                                        loc['tsid-speed-wind'] = speedWindTsidMapData;
+                                    }
 
-                                const dirWindTsidMapData = dirWindTsidMap.get(loc['location-id']);
-                                if (dirWindTsidMapData) {
-                                    loc['tsid-dir-wind'] = dirWindTsidMapData;
-                                }
+                                    const dirWindTsidMapData = dirWindTsidMap.get(loc['location-id']);
+                                    if (dirWindTsidMapData) {
+                                        loc['tsid-dir-wind'] = dirWindTsidMapData;
+                                    }
 
-                                const doTsidMapData = doTsidMap.get(loc['location-id']);
-                                if (doTsidMapData) {
-                                    loc['tsid-do'] = doTsidMapData;
-                                }
+                                    const doTsidMapData = doTsidMap.get(loc['location-id']);
+                                    if (doTsidMapData) {
+                                        loc['tsid-do'] = doTsidMapData;
+                                    }
 
-                                const depthTsidMapData = depthTsidMap.get(loc['location-id']);
-                                if (depthTsidMapData) {
-                                    loc['tsid-depth'] = depthTsidMapData;
-                                }
+                                    const depthTsidMapData = depthTsidMap.get(loc['location-id']);
+                                    if (depthTsidMapData) {
+                                        loc['tsid-depth'] = depthTsidMapData;
+                                    }
 
-                                const condTsidMapData = condTsidMap.get(loc['location-id']);
-                                if (condTsidMapData) {
-                                    loc['tsid-cond'] = condTsidMapData;
-                                }
+                                    const condTsidMapData = condTsidMap.get(loc['location-id']);
+                                    if (condTsidMapData) {
+                                        loc['tsid-cond'] = condTsidMapData;
+                                    }
 
-                                const phTsidMapData = phTsidMap.get(loc['location-id']);
-                                if (phTsidMapData) {
-                                    loc['tsid-ph'] = phTsidMapData;
-                                }
+                                    const phTsidMapData = phTsidMap.get(loc['location-id']);
+                                    if (phTsidMapData) {
+                                        loc['tsid-ph'] = phTsidMapData;
+                                    }
 
-                                const turbfTsidMapData = turbfTsidMap.get(loc['location-id']);
-                                if (turbfTsidMapData) {
-                                    loc['tsid-turbf'] = turbfTsidMapData;
-                                }
+                                    const turbfTsidMapData = turbfTsidMap.get(loc['location-id']);
+                                    if (turbfTsidMapData) {
+                                        loc['tsid-turbf'] = turbfTsidMapData;
+                                    }
 
-                                const pressureTsidMapData = pressureTsidMap.get(loc['location-id']);
-                                if (pressureTsidMapData) {
-                                    loc['tsid-pressure'] = pressureTsidMapData;
-                                }
+                                    const pressureTsidMapData = pressureTsidMap.get(loc['location-id']);
+                                    if (pressureTsidMapData) {
+                                        loc['tsid-pressure'] = pressureTsidMapData;
+                                    }
 
-                                const nitrateTsidMapData = nitrateTsidMap.get(loc['location-id']);
-                                if (nitrateTsidMapData) {
-                                    loc['tsid-nitrate'] = nitrateTsidMapData;
-                                }
+                                    const nitrateTsidMapData = nitrateTsidMap.get(loc['location-id']);
+                                    if (nitrateTsidMapData) {
+                                        loc['tsid-nitrate'] = nitrateTsidMapData;
+                                    }
 
-                                const chlorophyllTsidMapData = chlorophyllTsidMap.get(loc['location-id']);
-                                if (chlorophyllTsidMapData) {
-                                    loc['tsid-chlorophyll'] = chlorophyllTsidMapData;
-                                }
+                                    const chlorophyllTsidMapData = chlorophyllTsidMap.get(loc['location-id']);
+                                    if (chlorophyllTsidMapData) {
+                                        loc['tsid-chlorophyll'] = chlorophyllTsidMapData;
+                                    }
 
-                                const phycocyaninTsidMapData = phycocyaninTsidMap.get(loc['location-id']);
-                                if (phycocyaninTsidMapData) {
-                                    loc['tsid-phycocyanin'] = phycocyaninTsidMapData;
-                                }
+                                    const phycocyaninTsidMapData = phycocyaninTsidMap.get(loc['location-id']);
+                                    if (phycocyaninTsidMapData) {
+                                        loc['tsid-phycocyanin'] = phycocyaninTsidMapData;
+                                    }
 
-                                const speedTsidMapData = speedTsidMap.get(loc['location-id']);
-                                if (speedTsidMapData) {
-                                    loc['tsid-speed'] = speedTsidMapData;
-                                }
+                                    const speedTsidMapData = speedTsidMap.get(loc['location-id']);
+                                    if (speedTsidMapData) {
+                                        loc['tsid-speed'] = speedTsidMapData;
+                                    }
 
-                                const ownerMapData = ownerMap.get(loc['location-id']);
-                                if (ownerMapData) {
-                                    loc['owner'] = ownerMapData;
-                                }
+                                    const ownerMapData = ownerMap.get(loc['location-id']);
+                                    if (ownerMapData) {
+                                        loc['owner'] = ownerMapData;
+                                    }
 
-                                const riverMileMapData = riverMileMap.get(loc['location-id']);
-                                if (riverMileMapData) {
-                                    loc['river-mile'] = riverMileMapData;
-                                }
+                                    const riverMileHardCodedMapData = riverMileHardCodedMap.get(loc['location-id']);
+                                    if (riverMileHardCodedMapData) {
+                                        loc['river-mile'] = riverMileHardCodedMapData;
+                                    }
+                                })();
                             });
                         }
                     });
@@ -948,7 +964,6 @@ function filterByLocationCategory(array, category) {
     );
 }
 
-// Function to create and populate the table
 function createGageDataTable(allData) {
     // Create a table element
     const table = document.createElement('table');
@@ -1395,7 +1410,6 @@ function createGageDataTable(allData) {
 /******************************************************************************
  *                               FETCH CDA FUNCTIONS                          *
  ******************************************************************************/
-// Function to get flows data
 function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours) {
     if (tsidStage !== null) {
         // Fetch the time series data from the API using the determined query string
@@ -1536,7 +1550,6 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
     }
 }
 
-// Function to fetch and update NWS data
 function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days) {
     // Log current date and time
     // // console.log("currentDateTime = ", currentDateTime);
@@ -1669,14 +1682,12 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
     }
 }
 
-// Fetch PHP Json File to get Forecast Date
 function fetchAndUpdateNWSForecastDate(stageCell, tsid_stage_nws_3_day_forecast) {
     fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast); // Fetch and update the data
 
 
 }
 
-// Function to get flows data
 function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours) {
     if (tsidFlow !== null) {
         let urlFlow = null;
@@ -1852,7 +1863,6 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
     }
 }
 
-// Function to get flows data
 function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours) {
     if (tsid !== null) {
         // Fetch the time series data from the API using the determined query string
@@ -2106,7 +2116,6 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
     }
 }
 
-// Function to get flows data
 function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours) {
     if (tsid !== null) {
         // Fetch the time series data from the API using the determined query string
@@ -2303,7 +2312,6 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 /******************************************************************************
  *                               DATA CDA FUNCTIONS                           *
  ******************************************************************************/
-// Function to get the last non null value from values array
 function getLastNonNullValue(data) {
     // Iterate over the values array in reverse
     for (let i = data.values.length - 1; i >= 0; i--) {
@@ -2321,7 +2329,6 @@ function getLastNonNullValue(data) {
     return null;
 }
 
-// Find time series value at 24 hours ago
 function getLastNonNull24HoursValue(data, c_count) {
     let nonNullCount = 0;
     for (let i = data.values.length - 1; i >= 0; i--) {
@@ -2339,7 +2346,6 @@ function getLastNonNull24HoursValue(data, c_count) {
     return null;
 }
 
-// Find time series value at 6 hours ago
 function getLastNonNull6HoursValue(data, c_count) {
     let nonNullCount = 0;
     for (let i = data.values.length - 1; i >= 0; i--) {
@@ -2357,7 +2363,6 @@ function getLastNonNull6HoursValue(data, c_count) {
     return null;
 }
 
-// Function to get the first non-null value from values array
 function getFirstNonNullValue(data) {
     // Iterate over the values array
     for (let i = 0; i < data.values.length; i++) {
@@ -2379,7 +2384,6 @@ function getFirstNonNullValue(data) {
 /******************************************************************************
  *                            CLASSES CDA FUNCTIONS                           *
  ******************************************************************************/
-// Function determine last max class
 function determineStageClass(stage_value, flood_value) {
     // console.log("determineStageClass = ", stage_value + typeof (stage_value) + " " + flood_value + typeof (flood_value));
     var myStageClass;
@@ -2393,7 +2397,6 @@ function determineStageClass(stage_value, flood_value) {
     return myStageClass;
 }
 
-// Function determine date time class
 function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
     var myDateTimeClass;
     if (formattedDate >= currentDateTimeMinus2Hours) {
@@ -2405,7 +2408,6 @@ function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
     return myDateTimeClass;
 }
 
-// Function determine date time class
 function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2Hours, currentDateTimeMinus8Hours, label) {
     let myDateTimeClass;
     if (label.includes("LPMS")) {
@@ -2435,29 +2437,24 @@ function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2
 /******************************************************************************
  *                            SUPPORT CDA FUNCTIONS                           *
  ******************************************************************************/
-// Function to get current data time
 function subtractHoursFromDate(date, hoursToSubtract) {
     return new Date(date.getTime() - (hoursToSubtract * 60 * 60 * 1000));
 }
 
-// Function to get current data time
 function plusHoursFromDate(date, hoursToSubtract) {
     return new Date(date.getTime() + (hoursToSubtract * 60 * 60 * 1000));
 }
 
-// Function to add days to a given date
 function addDaysToDate(date, days) {
     return new Date(date.getTime() + (days * 24 * 60 * 60 * 1000));
 }
 
-// Function to convert cda date time to mm-dd-yyyy 24hh:mi
 function formatTimestampToString(timestampLast) {
     const date = new Date(timestampLast);
     const formattedDate = `${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}-${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     return formattedDate;
 }
 
-// Function to convert timestamp to specified format
 function formatNWSDate(timestamp) {
     const date = new Date(timestamp);
     const mm = String(date.getMonth() + 1).padStart(2, '0'); // Month
@@ -2468,7 +2465,6 @@ function formatNWSDate(timestamp) {
     return `${mm}-${dd}-${yyyy} ${hh}:${min}`;
 }
 
-// Function to extract values where time ends in "13:00"
 function extractValuesWithTimeNoon(values) {
     return values.filter(entry => {
         const timestamp = new Date(entry[0]);
@@ -2478,7 +2474,6 @@ function extractValuesWithTimeNoon(values) {
     });
 }
 
-// Function to find the c_count for each interval id
 function calculateCCount(tsid) {
     // Split the string at the period
     const splitString = tsid.split('.');
@@ -2524,7 +2519,6 @@ function calculateCCount(tsid) {
     return c_count;
 }
 
-// Convert date time object to ISO format for CDA
 function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus4Days) {
     // Convert current date and time to ISO string
     const currentDateTimeISO = currentDateTime.toISOString();
@@ -2558,7 +2552,6 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
 /******************************************************************************
  *                               FUNCTIONS PHP JSON                           *
  ******************************************************************************/
-// Function to fetch data from NWS forecasts output
 async function fetchDataFromNwsForecastsOutput() {
     let urlNwsForecast = null;
     if (cda === "public") {
@@ -2581,12 +2574,10 @@ async function fetchDataFromNwsForecastsOutput() {
     }
 }
 
-// Function to filter NWS data by tsid_stage_nws_3_day_forecast
 function filterDataByTsid(NwsOutput, cwms_ts_id) {
     return NwsOutput.filter(item => item !== null && item.cwms_ts_id_day1 === cwms_ts_id);
 }
 
-// Function to fetch and log NWS data
 async function fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast) {
     try {
         const NwsOutput = await fetchDataFromNwsForecastsOutput();
@@ -2605,7 +2596,6 @@ async function fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast) {
     }
 }
 
-// Function to update the HTML element with filtered data
 function updateNwsForecastTimeHTML(filteredData, stageCell) {
     const locationData = filteredData.find(item => item !== null); // Find the first non-null item
     if (!locationData) {
