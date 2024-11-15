@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const speedTsidMap = new Map();
     const ownerMap = new Map();
     const riverMileHardCodedMap = new Map();
+    const riverMileMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const speedTsidPromises = [];
     const ownerPromises = [];
     const riverMileHardCodedPromises = [];
+    const riverMilePromises = [];
 
 
     // Fetch the initial data
@@ -749,7 +751,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     }
                                 })();
 
-                                // river mile data request
+                                // river mile data hard coded request
                                 (() => {
                                     // Fetch the JSON file
                                     fetch('json/gage_control_official.json')
@@ -786,6 +788,35 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             console.error('Problem with the fetch operation:', error);
                                         });
                                 })();
+
+                                // river mile data request
+                                (() => {
+                                    let riverMileApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/stream-locations?office-mask=MVS`;
+                                    if (riverMileApiUrl) {
+                                        riverMilePromises.push(
+                                            fetch(riverMileApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`River Mile data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(riverMileData => {
+                                                    if (riverMileData) {
+                                                        console.log("riverMileData: ", riverMileData);
+                                                        riverMileMap.set(loc['location-id'], riverMileData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for river mile data at ${riverMileApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                })();
                             });
                         }
                     })
@@ -818,6 +849,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(speedTsidPromises))
                 .then(() => Promise.all(ownerPromises))
                 .then(() => Promise.all(riverMileHardCodedPromises))
+                .then(() => Promise.all(riverMilePromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -932,7 +964,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                                     const riverMileHardCodedMapData = riverMileHardCodedMap.get(loc['location-id']);
                                     if (riverMileHardCodedMapData) {
-                                        loc['river-mile'] = riverMileHardCodedMapData;
+                                        loc['river-mile-hard-coded'] = riverMileHardCodedMapData;
+                                    }
+
+                                    const riverMileMapData = riverMileMap.get(loc['location-id']);
+                                    if (riverMileMapData) {
+                                        loc['river-mile'] = riverMileMapData;
                                     }
                                 })();
                             });
@@ -1377,11 +1414,17 @@ function createGageDataTable(allData) {
             if (6 === 6) {
                 const riverMileCell = row.insertCell();
                 if (office === "MVS") {
-                    if (locData[`river-mile`].river_mile_hard_coded !== null) {
-                        riverMileCell.innerHTML = "<span class='hard_coded'>" + locData[`river-mile`].river_mile_hard_coded + "</span>"
-                    } else {
-                        riverMileCell.innerHTML = "--";
-                    }
+                    // // Hard Coded River Mile
+                    // if (locData[`river-mile-hard-coded`].river_mile_hard_coded !== null) {
+                    //     riverMileCell.innerHTML = "<span class='hard_coded'>" + locData[`river-mile-hard-coded`].river_mile_hard_coded + "</span>"
+                    // } else {
+                    //     riverMileCell.innerHTML = "--";
+                    // }
+
+                    const locationId = locData[`location-id`];
+                    const riverMileObject = locData['river-mile'];
+                    const riverMileValue = getStationForLocation(locationId, riverMileObject);
+                    riverMileCell.textContent = riverMileValue != null ? parseFloat(riverMileValue).toFixed(1) : "N/A";
                 } else {
                     if (locData.metadata[`vertical-datum`] !== null && locData.metadata.elevation !== undefined && locData.metadata.elevation < 900) {
                         riverMileCell.innerHTML = (locData.metadata.elevation).toFixed(2) + " (" + locData.metadata[`vertical-datum`] + ")";
@@ -2308,7 +2351,6 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
     }
 }
 
-
 /******************************************************************************
  *                               DATA CDA FUNCTIONS                           *
  ******************************************************************************/
@@ -2380,7 +2422,6 @@ function getFirstNonNullValue(data) {
     return null;
 }
 
-
 /******************************************************************************
  *                            CLASSES CDA FUNCTIONS                           *
  ******************************************************************************/
@@ -2432,7 +2473,6 @@ function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2
     // console.log("myDateTimeClass = ", myDateTimeClass);
     return myDateTimeClass;
 }
-
 
 /******************************************************************************
  *                            SUPPORT CDA FUNCTIONS                           *
@@ -2547,6 +2587,16 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
         currentDateTimeMidNightISO,
         currentDateTimePlus4DaysMidNightISO
     };
+}
+
+function getStationForLocation(locationId, riverMileObject) {
+    for (const entry of riverMileObject) {
+        const name = entry["stream-location-node"].id.name;
+        if (name === locationId) {
+            return entry["stream-location-node"]["stream-node"].station || null; // Return station if it exists, else null
+        }
+    }
+    return null; // Return null if no match is found
 }
 
 /******************************************************************************
