@@ -1110,10 +1110,16 @@ function createGageDataTable(allData, setBaseUrl) {
                     // If the owner's ID is "MVS", set the text color to dark blue
                     locationCell.style.color = 'darkblue';
 
-                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData[`location-id`];
-                    // locationCell.innerHTML = locData.attribute + " " + locData.metadata[`public-name`];
+                    // Create a link with location-id (gage)
+                    const locationLink = document.createElement('a');
+                    // Make the link open in a new tab
+                    locationLink.target = '_blank';
+                    locationLink.href = `../metadata/index.html?office=MVS&type=data&gage=${encodeURIComponent(locData['location-id'])}`;
+                    locationLink.textContent = Math.round(locData.attribute) + " " + locData['location-id'];
+
+                    locationCell.appendChild(locationLink); // Append the link to the cell
                 } else {
-                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData[`location-id`];
+                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData['location-id'];
                 }
             })();
 
@@ -1728,7 +1734,7 @@ function fetchAndUpdateNWSForecastDate(stageCell, tsid_stage_nws_3_day_forecast)
 function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl) {
     if (tsidFlow !== null) {
         const urlFlow = `${setBaseUrl}timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
-        
+
         // console.log("urlFlow = ", urlFlow);
         // Fetch the time series data from the API using the determined query string
         fetch(urlFlow, {
