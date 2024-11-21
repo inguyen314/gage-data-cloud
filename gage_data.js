@@ -1024,6 +1024,7 @@ function createGageDataTable(allData, setBaseUrl) {
         if (cda === "public" || cda === "internal") {
             th.style.height = '50px';
             th.style.backgroundColor = 'darkblue'; // Set background color to dark blue
+            th.style.color = 'white';
         } else {
             th.style.height = '50px';
         }
