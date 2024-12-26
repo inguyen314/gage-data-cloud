@@ -152,9 +152,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                             console.log(`No assigned-locations found.`);
                         }
 
-
                         // Process and append the fetched data to combinedData
                         combinedData.push(data);
+
+                        console.log('data push:', data);
 
                         // Process each location within the basin data
                         if (data['assigned-locations']) {
@@ -780,7 +781,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                         riverMile: riverMile
                                                     };
 
-                                                    console.log("Output Data:", outputData);
+                                                    // console.log("Output Data:", outputData);
                                                     riverMileHardCodedMap.set(loc, ownerData); // Store the data in the map
                                                 }
                                             }
@@ -808,7 +809,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(riverMileData => {
                                                     if (riverMileData) {
-                                                        console.log("riverMileData: ", riverMileData);
+                                                        // console.log("riverMileData: ", riverMileData);
                                                         riverMileMap.set(loc['location-id'], riverMileData);
                                                     }
                                                 })
@@ -884,8 +885,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     }
 
                                     const tempAirTsidMapData = tempAirTsidMap.get(loc['location-id']);
-                                    if (tempAirTsidMapData) {
+                                    if (tempAirTsidMapData != null) {
                                         loc['tsid-temp-air'] = tempAirTsidMapData;
+                                    } else {
+                                        loc['tsid-temp-air'] = null;
                                     }
 
                                     const tempWaterTsidMapData = tempWaterTsidMap.get(loc['location-id']);
@@ -994,14 +997,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 });
 
-function filterByLocationCategory(array, category) {
-    return array.filter(item =>
-        item['location-category'] &&
-        item['location-category']['office-id'] === category['office-id'] &&
-        item['location-category']['id'] === category['id']
-    );
-}
-
+/******************************************************************************
+ *                               CREATE TABLE FUNCTIONS                       *
+ ******************************************************************************/
 function createGageDataTable(allData, setBaseUrl) {
     // Create a table element
     const table = document.createElement('table');
@@ -1577,7 +1575,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4&cda=public' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4&cda=internal' target='_blank'>"
                         + valueLast
                         + "</a>"
                         + "</span>"
@@ -1684,17 +1682,17 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                                 + "</tr>"
                                 + "<tr>"
                                 + "<td class='" + floodClassDay1 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=internal' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
                                 + firstMiddleValue
                                 + "</a>"
                                 + "</td>"
                                 + "<td class='" + floodClassDay2 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=internal' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
                                 + secondMiddleValue
                                 + "</a>"
                                 + "</td>"
                                 + "<td class='" + floodClassDay3 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=internal' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
                                 + thirdMiddleValue
                                 + "</a>"
                                 + "</td>"
@@ -1728,8 +1726,6 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
 
 function fetchAndUpdateNWSForecastDate(stageCell, tsid_stage_nws_3_day_forecast) {
     fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast); // Fetch and update the data
-
-
 }
 
 function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl) {
@@ -1879,7 +1875,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + "</span>";
                 } else {
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=4&cda=public' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=4&cda=internal' target='_blank'>"
                         + roundedValueFlowLast
                         + "</a>"
                         + "</span>"
@@ -2131,7 +2127,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</tr>"
                         + "</table>"
                         + "<span class='last_max_value' title='" + precip.name + ", Value = " + valuePrecipLast + ", Date Time = " + timestampPrecipLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=4&cda=public' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=4&cda=internal' target='_blank'>"
                         + valuePrecipLast
                         + "</a>"
                         + "</span>"
@@ -2299,7 +2295,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else if (valueWaterQualityLast > 1000) {
                     innerHTMLWaterQuality = "<span class='blinking-text' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=public' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=internal' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
@@ -2315,7 +2311,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else {
                     innerHTMLWaterQuality = "<span class='last_max_value' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=public' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=internal' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
@@ -2340,7 +2336,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 }
 
 /******************************************************************************
- *                               DATA CDA FUNCTIONS                           *
+ *                           GET DATA FUNCTIONS                               *
  ******************************************************************************/
 function getLastNonNullValue(data) {
     // Iterate over the values array in reverse
@@ -2465,6 +2461,14 @@ function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2
 /******************************************************************************
  *                            SUPPORT CDA FUNCTIONS                           *
  ******************************************************************************/
+function filterByLocationCategory(array, category) {
+    return array.filter(item =>
+        item['location-category'] &&
+        item['location-category']['office-id'] === category['office-id'] &&
+        item['location-category']['id'] === category['id']
+    );
+}
+
 function subtractHoursFromDate(date, hoursToSubtract) {
     return new Date(date.getTime() - (hoursToSubtract * 60 * 60 * 1000));
 }
