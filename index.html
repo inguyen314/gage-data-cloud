@@ -53,18 +53,18 @@
                     const urlParams = new URLSearchParams(window.location.search);
 
                     const param5Value = urlParams.get('office');
-                    var office = urlParams.get('office');
+                    var office = urlParams.get('office') || 'MVS';
                     console.log('office: ', office);
 
                     // Calculate the document root
                     const documentRoot = window.location.protocol + "//" + window.location.host + "/";
 
                     // Determine the default value of cda based on documentRoot
-                    const cdaDefault = (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    const cdaDefault = (documentRoot === `https://wm.${office}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("cdaDefault: ", cdaDefault);
 
                     // Determine the default value of cda based on documentRoot
-                    const typeDefault = (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    const typeDefault = (documentRoot === `https://wm.${office}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
 
                     // Get the value of a specific parameter

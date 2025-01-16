@@ -54,9 +54,14 @@ document.addEventListener('DOMContentLoaded', async function () {
     const riverMilePromises = [];
 
     // Base URL configuration based on data access type (public/internal)
-    let setBaseUrl = cda === "internal"
-        ? `https://wm.${office.toLowerCase()}.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`
-        : `https://cwms-data.usace.army.mil/cwms-data/`;
+    let setBaseUrl = null;
+    if (cda === "internal") {
+        setBaseUrl = `https://wm.${office.toLowerCase()}.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`;
+        console.log("setBaseUrl: ", setBaseUrl);
+    } else if (cda === "public") {
+        setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
+        console.log("setBaseUrl: ", setBaseUrl);
+    }
 
     if (cda === "internal") {
         apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
@@ -742,7 +747,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(ownerData => {
                                                     if (ownerData) {
-                                                        console.log("ownerData", ownerData);
+                                                        // console.log("ownerData", ownerData);
                                                         ownerMap.set(loc['location-id'], ownerData);
                                                     }
                                                 })
@@ -1070,7 +1075,7 @@ function createGageDataTable(allData, setBaseUrl) {
 
     // Iterate through the mergedData to populate the table
     for (const locData of allData[0][`assigned-locations`]) {
-        console.log("locData:", locData);
+        // console.log("locData:", locData);
 
         // HIDE LOCATION BASED ON VISIBLE
         if (locData.visible !== false) {
@@ -1148,7 +1153,7 @@ function createGageDataTable(allData, setBaseUrl) {
                     if (locData['tsid-stage']) {
                         tsidStage = locData['tsid-stage']['assigned-time-series'][0]['timeseries-id'];
                         // fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                        fetchAndUpdateStage(topDiv, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        fetchAndUpdateStage(topDiv, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl);
                     }
 
                     // Check if the office is "MVS" and other conditions
@@ -1456,15 +1461,11 @@ function createGageDataTable(allData, setBaseUrl) {
 /******************************************************************************
  *                               FETCH CDA FUNCTIONS                          *
  ******************************************************************************/
-function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours) {
+function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl) {
     if (tsidStage !== null) {
         // Fetch the time series data from the API using the determined query string
-        let urlStage = null;
-        if (cda === "public") {
-            urlStage = `${setBaseUrl}timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
-        } else if (cda === "internal") {
-            urlStage = `https://coe-${office}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
-        }
+        const urlStage = `${setBaseUrl}timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
+
         // console.log("urlStage = ", urlStage);
         fetch(urlStage, {
             method: 'GET',
