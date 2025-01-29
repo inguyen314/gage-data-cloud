@@ -60,15 +60,14 @@
                     const documentRoot = window.location.protocol + "//" + window.location.host + "/";
 
                     // Determine the default value of cda based on documentRoot
-                    const cdaDefault = (documentRoot === `https://wm.${office}.ds.usace.army.mil/`) ? "internal" : "public";
+                    const cdaDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("cdaDefault: ", cdaDefault);
 
                     // Determine the default value of cda based on documentRoot
-                    const typeDefault = (documentRoot === `https://wm.${office}.ds.usace.army.mil/`) ? "internal" : "public";
+                    const typeDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
 
                     // Get the value of a specific parameter
-                    const param2Value = urlParams.get('cda');
                     var cda = urlParams.get('cda') || cdaDefault;
                     console.log('cda: ', cda);
 
@@ -249,7 +248,7 @@
         // Set the title and the span content based on the 'type' parameter
         const type = urlParams.get('type');
         // title = "Gage Data" + " - " + urlParams.get('basin') + " - " + urlParams.get('cda');
-        title = office + " - " + "Realtime Gage Data - " + " " + basin;
+        title = office + " Realtime Gage Data - " + " " + basin;
 
         if (title) {
             document.title = title;
