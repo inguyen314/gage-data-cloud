@@ -1107,7 +1107,7 @@ function createGageDataTable(allData, setBaseUrl) {
                 locationCell.style.fontWeight = 'bold';
 
                 // Assuming locData is defined and populated as you provided
-                const assignedLocations = locData.owner['assigned-locations'].map(location => location['location-id']);
+                const assignedLocations = locData.owner?.['assigned-locations']?.map(location => location['location-id']) || [];
 
                 // Check if the location-id exists in the assigned locations
                 if (assignedLocations.includes(locData['location-id'])) {
@@ -1429,8 +1429,13 @@ function createGageDataTable(allData, setBaseUrl) {
                     //     riverMileCell.innerHTML = "--";
                     // }
 
+                    // console.log("Full locData object:", JSON.stringify(locData, null, 2));
+                    // console.log("locData['river-mile']:", locData['river-mile']);
+                    // console.log("Type of locData['river-mile']:", typeof locData['river-mile']);
+                    // console.log("Is locData['river-mile'] an array?", Array.isArray(locData['river-mile']));
+
                     const locationId = locData[`location-id`];
-                    const riverMileObject = locData['river-mile'];
+                    const riverMileObject = locData?.["river-mile"] ?? locData?.["River-Mile"] ?? [];
                     const riverMileValue = getStationForLocation(locationId, riverMileObject);
                     riverMileCell.textContent = riverMileValue != null ? parseFloat(riverMileValue).toFixed(1) : "N/A";
                 } else {
@@ -1545,7 +1550,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 // console.log("delta_24:", delta_24);
 
                 // Format the last valueLast's timestampLast to a string
-                const formattedLastValueTimeStamp = formatTimestampToString(timestampLast);
+                const formattedLastValueTimeStamp = formatTimestampToStringIOS(timestampLast);
                 // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampLast
@@ -1848,7 +1853,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
 
 
                 // Format the last valueLast's timestampFlowLast to a string
-                const formattedLastValueTimeStamp = formatTimestampToString(timestampFlowLast);
+                const formattedLastValueTimeStamp = formatTimestampToStringIOS(timestampFlowLast);
                 // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
 
@@ -2013,7 +2018,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
 
 
                 // Format the last valueLast's timestampFlowLast to a string
-                const formattedLastValueTimeStamp = formatTimestampToString(timestampPrecipLast);
+                const formattedLastValueTimeStamp = formatTimestampToStringIOS(timestampPrecipLast);
                 // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampFlowLast
@@ -2272,7 +2277,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 // console.log("delta_24_water_quality:", delta_24_water_quality);
 
                 // Format the last valueLast's timestampFlowLast to a string
-                const formattedLastValueTimeStamp = formatTimestampToString(timestampWaterQualityLast);
+                const formattedLastValueTimeStamp = formatTimestampToStringIOS(timestampWaterQualityLast);
                 // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampFlowLast
@@ -2583,17 +2588,51 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
 }
 
 function getStationForLocation(locationId, riverMileObject) {
+    // console.log("riverMileObject BEFORE function call:", JSON.stringify(riverMileObject, null, 2));
+    // console.log("Type of riverMileObject:", typeof riverMileObject);
+    // console.log("Is riverMileObject an array?", Array.isArray(riverMileObject));
+
     if (!Array.isArray(riverMileObject)) {
-        console.error("riverMileObject is not an array or is undefined/null");
+        // console.error("riverMileObject is not an array or is undefined/null", riverMileObject);
         return null;
     }
+
     for (const entry of riverMileObject) {
-        const name = entry["stream-location-node"].id.name;
+        // console.log("Processing entry:", JSON.stringify(entry, null, 2)); // Log full entry
+
+        if (!entry || !entry["stream-location-node"]) {
+            // console.warn("Skipping entry due to missing stream-location-node", entry);
+            continue;
+        }
+
+        const name = entry["stream-location-node"]?.id?.name;
+        // console.log("Location ID in entry:", name);
+
         if (name === locationId) {
-            return entry["stream-location-node"]["stream-node"].station || null; // Return station if it exists, else null
+            // console.log("Match found! Returning station:", entry["stream-location-node"]?.["stream-node"]?.station);
+            return entry["stream-location-node"]?.["stream-node"]?.station || null;
         }
     }
-    return null; // Return null if no match is found
+
+    // console.log("No match found for locationId:", locationId);
+    return null;
+}
+
+function formatTimestampToStringIOS(timestamp) {
+    if (!timestamp) return "Invalid date";
+
+    // Split the timestamp into date and time parts
+    const [datePart, timePart] = timestamp.split(" ");
+    const [day, month, year] = datePart.split("-").map(Number);
+    const [hours, minutes] = timePart.split(":").map(Number);
+
+    // Create a new Date object (Month is 0-based in JS)
+    const dateObj = new Date(Date.UTC(year, month - 1, day, hours, minutes));
+
+    if (isNaN(dateObj.getTime())) return "Invalid date";
+
+    // Format as "YYYY-MM-DD HH:mm"
+    return dateObj.toISOString().replace("T", " ").slice(0, 16);
 }
 
 /******************************************************************************
