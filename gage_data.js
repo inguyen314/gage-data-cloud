@@ -2214,36 +2214,40 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 // console.log("label = ", label);
 
                 // WATER QUALITY CLASS
-                if (label.includes("AIR")) {
-                    var myWaterQualityClass = "water_quality_temp_air";
-                } else if (label.includes("WATER")) {
-                    var myWaterQualityClass = "water_quality_temp_water";
-                } else if (label.includes("DO")) {
-                    var myWaterQualityClass = "water_quality_do";
-                } else if (label.includes("DEPTH")) {
-                    var myWaterQualityClass = "water_quality_depth";
-                } else if (label.includes("COND")) {
-                    var myWaterQualityClass = "water_quality_cond";
-                } else if (label.includes("PH")) {
-                    var myWaterQualityClass = "water_quality_ph";
-                } else if (label.includes("TURB")) {
-                    var myWaterQualityClass = "water_quality_turb";
-                } else if (label.includes("SPEED")) {
-                    var myWaterQualityClass = "water_quality_speed_wind";
-                } else if (label.includes("PRESSURE")) {
-                    var myWaterQualityClass = "water_quality_pressure";
-                } else if (label.includes("DIR")) {
-                    var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.includes("NITRATE")) {
-                    var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.includes("CHLOROPHYLL")) {
-                    var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.includes("PHYCOCYANIN")) {
-                    var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label === undefined) {
-                    var myWaterQualityClass = "water_quality_do";
+                var myWaterQualityClass = "";
+
+                // Ensure label is a string before calling includes()
+                if (typeof label === "string") {
+                    if (label.includes("AIR")) {
+                        myWaterQualityClass = "water_quality_temp_air";
+                    } else if (label.includes("WATER")) {
+                        myWaterQualityClass = "water_quality_temp_water";
+                    } else if (label.includes("DO")) {
+                        myWaterQualityClass = "water_quality_do";
+                    } else if (label.includes("DEPTH")) {
+                        myWaterQualityClass = "water_quality_depth";
+                    } else if (label.includes("COND")) {
+                        myWaterQualityClass = "water_quality_cond";
+                    } else if (label.includes("PH")) {
+                        myWaterQualityClass = "water_quality_ph";
+                    } else if (label.includes("TURB")) {
+                        myWaterQualityClass = "water_quality_turb";
+                    } else if (label.includes("SPEED")) {
+                        myWaterQualityClass = "water_quality_speed_wind";
+                    } else if (label.includes("PRESSURE")) {
+                        myWaterQualityClass = "water_quality_pressure";
+                    } else if (label.includes("DIR")) {
+                        myWaterQualityClass = "water_quality_dir_wind";
+                    } else if (label.includes("NITRATE")) {
+                        myWaterQualityClass = "water_quality_nitrate";
+                    } else if (label.includes("CHLOROPHYLL")) {
+                        myWaterQualityClass = "water_quality_chlorophyll";
+                    } else if (label.includes("PHYCOCYANIN")) {
+                        myWaterQualityClass = "water_quality_phycocyanin";
+                    }
                 } else {
-                    var myWaterQualityClass = "";
+                    // Default class if label is null, undefined, or not a string
+                    myWaterQualityClass = "water_quality_do";
                 }
                 // console.log("myWaterQualityClass = ", myWaterQualityClass);
 
@@ -2462,26 +2466,27 @@ function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
 
 function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2Hours, currentDateTimeMinus8Hours, label) {
     let myDateTimeClass;
+
+    // Handle undefined or non-string labels
+    if (!label || typeof label !== "string") {
+        console.warn("Warning: Invalid or undefined label:", label);
+        label = ""; // Assign an empty string to prevent `.includes()` errors
+    }
+
     if (label.includes("LPMS")) {
         if (formattedDate >= currentDateTimeMinus8Hours) {
             myDateTimeClass = "date_time_current";
-            // console.log("formattedDate = ", formattedDate);
         } else {
             myDateTimeClass = "date_time_late";
-            // console.log("formattedDate = ", formattedDate);
-            // console.log("currentDateTimeMinus8Hours = ", currentDateTimeMinus8Hours);
         }
     } else {
         if (formattedDate >= currentDateTimeMinus2Hours) {
             myDateTimeClass = "date_time_current";
-            // console.log("formattedDate = ", formattedDate);
         } else {
             myDateTimeClass = "date_time_late";
-            // console.log("formattedDate = ", formattedDate);
-            // console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
         }
     }
-    // console.log("myDateTimeClass = ", myDateTimeClass);
+
     return myDateTimeClass;
 }
 
