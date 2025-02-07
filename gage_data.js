@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     } else if (cda === "public") {
         setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
     }
-     console.log("setBaseUrl: ", setBaseUrl);
+    console.log("setBaseUrl: ", setBaseUrl);
 
     if (json === "true" && (basin === "Mississippi" || basin === "Kaskaskia")) {
         fetch(`json/${basin}.json`)
@@ -1674,17 +1674,19 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                     // Output the extracted values
                     // console.log("valuesWithTimeNoon = ", valuesWithTimeNoon);
 
-                    // Extract the second middle value
-                    const firstFirstValue = valuesWithTimeNoon[1][0];
-                    const firstMiddleValue = (valuesWithTimeNoon[1][1] !== null) ? (parseFloat(valuesWithTimeNoon[1][1])).toFixed(2) : "-M-";
+                    // Extract the first second middle value
+                    const firstFirstValue = valuesWithTimeNoon?.[1]?.[0];
+                    const firstMiddleValue = (valuesWithTimeNoon?.[1]?.[1] !== null) ? (((parseFloat(valuesWithTimeNoon?.[1]?.[1])).toFixed(1) < 10) & ((parseFloat(valuesWithTimeNoon?.[1]?.[1])).toFixed(1) >= 0) ? (parseFloat(valuesWithTimeNoon?.[1]?.[1])).toFixed(1) : (parseFloat(valuesWithTimeNoon?.[1]?.[1])).toFixed(1)) : "";
+                    // console.log("firstMiddleValue = ", firstMiddleValue);
+                    // console.log("firstMiddleValue = ", typeof (firstMiddleValue));
 
-                    // Extract the second middle value
-                    const secondFirstValue = valuesWithTimeNoon[2][0];
-                    const secondMiddleValue = (valuesWithTimeNoon[2][1] !== null) ? (parseFloat(valuesWithTimeNoon[2][1])).toFixed(2) : "-M-";
+                    // Extract the second second middle value
+                    const secondFirstValue = valuesWithTimeNoon?.[2]?.[0];
+                    const secondMiddleValue = (valuesWithTimeNoon?.[2]?.[1] !== null) ? (((parseFloat(valuesWithTimeNoon?.[2]?.[1])).toFixed(1) < 10) & ((parseFloat(valuesWithTimeNoon?.[2]?.[1])).toFixed(1) >= 0) ? (parseFloat(valuesWithTimeNoon?.[2]?.[1])).toFixed(1) : (parseFloat(valuesWithTimeNoon?.[2]?.[1])).toFixed(1)) : "";
 
-                    // Extract the second middle value
-                    const thirdFirstValue = valuesWithTimeNoon[3][0];
-                    const thirdMiddleValue = (valuesWithTimeNoon[3][1] !== null) ? (parseFloat(valuesWithTimeNoon[3][1])).toFixed(2) : "-M-";
+                    // Extract the third second middle value
+                    const thirdFirstValue = valuesWithTimeNoon?.[3]?.[0];
+                    const thirdMiddleValue = (valuesWithTimeNoon?.[3]?.[1] !== null) ? (((parseFloat(valuesWithTimeNoon?.[3]?.[1])).toFixed(1) < 10) & ((parseFloat(valuesWithTimeNoon?.[3]?.[1])).toFixed(1) >= 0) ? (parseFloat(valuesWithTimeNoon?.[3]?.[1])).toFixed(1) : (parseFloat(valuesWithTimeNoon?.[3]?.[1])).toFixed(1)) : "";
 
                     // FLOOD CLASS
                     var floodClassDay1 = determineStageClass(firstMiddleValue, flood_level);
