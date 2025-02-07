@@ -78,6 +78,10 @@
                     const param3Value = urlParams.get('gage');
                     var gage = urlParams.get('gage');
                     console.log('gage: ', gage);
+
+                    const param6Value = urlParams.get('json');
+                    var json = urlParams.get('json') || "false";
+                    console.log('json: ', json);
                 </script>
 
                 <!-- Basin Selection -->
@@ -167,7 +171,7 @@
                                     for (var i = 0; i < basins.length; i++) {
                                         var th = document.createElement('th');
                                         var link = document.createElement('a');
-                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=public";
+                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + '&cda=public' + '&json=' + json;
                                         link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                         var p = document.createElement('p');
                                         p.appendChild(link);
@@ -178,7 +182,7 @@
                                     for (var i = 0; i < basins.length; i++) {
                                         var th = document.createElement('th');
                                         var link = document.createElement('a');
-                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=internal";
+                                        link.href = 'index.html?office=' + office + '&basin=' + basins[i] + '&cda=internal' + '&json=' + json;
                                         link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                         var p = document.createElement('p');
                                         p.appendChild(link);
