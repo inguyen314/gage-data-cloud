@@ -1600,7 +1600,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4&cda=internal' target='_blank'>"
+                        + "<a href='../chart?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4' target='_blank'>"
                         + valueLast
                         + "</a>"
                         + "</span>"
