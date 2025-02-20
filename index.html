@@ -48,24 +48,35 @@
                     // Create a URL object with the current page URL
                     const urlParams = new URLSearchParams(window.location.search);
 
-                    const param5Value = urlParams.get('office');
                     var office = urlParams.get('office') || 'MVS';
                     console.log('office: ', office);
 
+                    // Get the value of a specific parameter
+                    var cda = urlParams.get('cda');
+                    console.log('cda: ', cda);
+
                     // Calculate the document root
                     const documentRoot = window.location.protocol + "//" + window.location.host + "/";
+                    console.log("documentRoot: ", documentRoot);
 
                     // Determine the default value of cda based on documentRoot
-                    const cdaDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    if (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/` || `http://localhost:5173/` || `https://wm.rsgis.dev/` || `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
+                        cdaDefault = "internal";
+                    } else if (documentRoot === `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
+                        cdaDefault = "internal-coop";
+                    } else {
+                        cdaDefault = "public";
+                    }
                     console.log("cdaDefault: ", cdaDefault);
+
+                    if (cda === null) {
+                        cda = cdaDefault;
+                    }
+                    console.log("cda: ", cda);
 
                     // Determine the default value of cda based on documentRoot
                     const typeDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
-
-                    // Get the value of a specific parameter
-                    var cda = urlParams.get('cda') || cdaDefault;
-                    console.log('cda: ', cda);
 
                     const param4Value = urlParams.get('type');
                     var type = urlParams.get('type') || typeDefault;
