@@ -60,6 +60,7 @@
                     console.log("documentRoot: ", documentRoot);
 
                     // Determine the default value of cda based on documentRoot
+                    let cdaDefault = null;
                     if (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/` || `http://localhost:5173/` || `https://wm.rsgis.dev/` || `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
                         cdaDefault = "internal";
                     } else if (documentRoot === `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
@@ -78,19 +79,15 @@
                     const typeDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
 
-                    const param4Value = urlParams.get('type');
                     var type = urlParams.get('type') || typeDefault;
                     console.log('type: ', type);
 
-                    const param1Value = urlParams.get('basin');
                     var basin = urlParams.get('basin') || 'Mississippi';
                     console.log('basin: ', basin);
 
-                    const param3Value = urlParams.get('gage');
                     var gage = urlParams.get('gage');
                     console.log('gage: ', gage);
 
-                    const param6Value = urlParams.get('json');
                     var json = urlParams.get('json') || "true";
                     console.log('json: ', json);
                 </script>
@@ -218,7 +215,7 @@
                     }
                 </script>
 
-                <!-- Report Container -->
+                <button id="reportIssueBtn" style="display: none;" onclick="sendEmail()">Report Issue</button>
                 <div id="loading_json" style="display: none; align-items: center; text-align: center;">
                     <img src="images/loading4.gif" style='height: 50px; width: 50px;' alt="Loading..." />
                 </div>
