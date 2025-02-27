@@ -1089,7 +1089,7 @@ function createGageDataTable(allData, setBaseUrl) {
     // Create table headers for the desired columns
     let columns = null;
     if (office === "MVS") {
-        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "River Mile", "Flood/LWRP Level"];
+        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "River Mile", "Flood Level", "LWRP Level"];
     } else {
         columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "Gage Zero", "Flood Level"];
     }
@@ -1544,7 +1544,13 @@ function createGageDataTable(allData, setBaseUrl) {
             // FLOOD LEVEL
             (() => {
                 const floodCell = row.insertCell();
-                floodCell.innerHTML = flood_level + " / " + lwrp_level;
+                floodCell.innerHTML = flood_level;
+            })();
+
+            // LWRP LEVEL
+            (() => {
+                const lwrpCell = row.insertCell();
+                lwrpCell.innerHTML = lwrp_level;
             })();
         }
     };
