@@ -848,7 +848,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                                     // river mile data request
                                     (() => {
-                                        let riverMileApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/stream-locations?office-mask=MVS`;
+                                        // let riverMileApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/stream-locations?office-mask=MVS`;
+                                        let riverMileApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/stream-locations?office-mask=${office}&name-mask=${loc['location-id']}`;
                                         if (riverMileApiUrl) {
                                             riverMilePromises.push(
                                                 fetch(riverMileApiUrl)
@@ -1088,7 +1089,7 @@ function createGageDataTable(allData, setBaseUrl) {
     // Create table headers for the desired columns
     let columns = null;
     if (office === "MVS") {
-        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "River Mile", "Flood Level"];
+        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "River Mile", "Flood/LWRP Level"];
     } else {
         columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "Gage Zero", "Flood Level"];
     }
@@ -1162,14 +1163,35 @@ function createGageDataTable(allData, setBaseUrl) {
                     locData.flood[`constant-value`].toFixed(2) == 0.00 ||
                     locData.flood[`constant-value`].toFixed(2) > 900
                 ) {
-                    flood_level = null; // If flood level is null or outside range, set flood_level to an empty string
+                    flood_level = ""; // If flood level is null or outside range, set flood_level to an empty string
                 } else {
                     flood_level = parseFloat(locData.flood[`constant-value`]).toFixed(2); // Otherwise, format flood level to two decimal places
                 }
             } else {
-                flood_level = null;
+                flood_level = "";
             }
             // console.log("flood_level:", flood_level);
+
+            let lwrp_level = null;
+
+            // Check if locData has the 'lwrp' property and if its 'constant-value' is not null
+            if (locData.lwrp && locData.lwrp[`constant-value`] !== null) {
+                // Check conditions for lwrp level value and format it to two decimal places if it falls within range
+                if (
+                    locData.lwrp[`constant-value`] === null ||
+                    locData.lwrp[`constant-value`].toFixed(2) == 0.00 ||
+                    locData.lwrp[`constant-value`].toFixed(2) > 900
+                ) {
+                    lwrp_level = ""; // If lwrp level is null or outside range, set lwrp_level to null
+                } else {
+                    lwrp_level = parseFloat(locData.lwrp[`constant-value`]).toFixed(2); // Otherwise, format lwrp level to two decimal places
+                }
+            } else {
+                lwrp_level = "";
+            }
+
+            // console.log("lwrp_level:", lwrp_level);
+
 
             // LOCATION
             (() => {
@@ -1522,7 +1544,7 @@ function createGageDataTable(allData, setBaseUrl) {
             // FLOOD LEVEL
             (() => {
                 const floodCell = row.insertCell();
-                floodCell.innerHTML = flood_level;
+                floodCell.innerHTML = flood_level + " / " + lwrp_level;
             })();
         }
     };
