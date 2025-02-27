@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Store location metadata and flood data
         const metadataMap = new Map();
         const floodMap = new Map();
+        const lwrpMap = new Map();
         const stageTsidMap = new Map();
         const forecastNwsTsidMap = new Map();
         const flowTsidMap = new Map();
@@ -54,12 +55,13 @@ document.addEventListener('DOMContentLoaded', async function () {
         const phycocyaninTsidMap = new Map();
         const speedTsidMap = new Map();
         const ownerMap = new Map();
-        const riverMileHardCodedMap = new Map();
+        // const riverMileHardCodedMap = new Map();
         const riverMileMap = new Map();
 
         // Arrays to track promises for metadata and flood data fetches
         const metadataPromises = [];
         const floodPromises = [];
+        const lwrpPromises = [];
         const stageTsidPromises = [];
         const forecastNwsTsidPromises = [];
         const flowTsidPromises = [];
@@ -79,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const phycocyaninTsidPromises = [];
         const speedTsidPromises = [];
         const ownerPromises = [];
-        const riverMileHardCodedPromises = [];
+        // const riverMileHardCodedPromises = [];
         const riverMilePromises = [];
 
         if (cda === "internal") {
@@ -239,6 +241,35 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                     })
                                                     .catch(error => {
                                                         console.error(`Problem with the fetch operation for flood data at ${floodApiUrl}:`, error);
+                                                    })
+                                            );
+                                        }
+                                    })();
+
+                                    // lwrp data request
+                                    (() => {
+                                        let lwrpApiUrl = `${setBaseUrl}levels/${loc['location-id']}.Stage.Inst.0.LWRP?office=${office}&effective-date=2024-01-01T08:00:00&unit=ft`;
+                                        if (lwrpApiUrl) {
+                                            // Push the fetch promise to the lwrpPromises array
+                                            lwrpPromises.push(
+                                                fetch(lwrpApiUrl)
+                                                    .then(response => {
+                                                        if (response.status === 404) {
+                                                            // console.warn(`lwrp data not found for location: ${loc['location-id']}`);
+                                                            return null; // Skip processing if no lwrp data is found
+                                                        }
+                                                        if (!response.ok) {
+                                                            throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                        }
+                                                        return response.json();
+                                                    })
+                                                    .then(lwrpData => {
+                                                        if (lwrpData) {
+                                                            lwrpMap.set(loc['location-id'], lwrpData);
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        console.error(`Problem with the fetch operation for lwrp data at ${lwrpApiUrl}:`, error);
                                                     })
                                             );
                                         }
@@ -778,42 +809,42 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     })();
 
                                     // river mile data hard coded request
-                                    (() => {
-                                        // Fetch the JSON file
-                                        fetch('json/gage_control_official.json')
-                                            .then(response => {
-                                                if (!response.ok) {
-                                                    throw new Error(`Network response was not ok: ${response.statusText}`);
-                                                }
-                                                return response.json();
-                                            })
-                                            .then(riverMilesJson => {
-                                                // Loop through each basin in the JSON
-                                                for (const basin in riverMilesJson) {
-                                                    const locations = riverMilesJson[basin];
+                                    // (() => {
+                                    //     // Fetch the JSON file
+                                    //     fetch('json/gage_control_official.json')
+                                    //         .then(response => {
+                                    //             if (!response.ok) {
+                                    //                 throw new Error(`Network response was not ok: ${response.statusText}`);
+                                    //             }
+                                    //             return response.json();
+                                    //         })
+                                    //         .then(riverMilesJson => {
+                                    //             // Loop through each basin in the JSON
+                                    //             for (const basin in riverMilesJson) {
+                                    //                 const locations = riverMilesJson[basin];
 
-                                                    for (const loc in locations) {
-                                                        const ownerData = locations[loc];
+                                    //                 for (const loc in locations) {
+                                    //                     const ownerData = locations[loc];
 
-                                                        // Retrieve river mile and other data
-                                                        const riverMile = ownerData.river_mile_hard_coded;
+                                    //                     // Retrieve river mile and other data
+                                    //                     const riverMile = ownerData.river_mile_hard_coded;
 
-                                                        // Create an output object using the location name as ID
-                                                        const outputData = {
-                                                            locationId: loc, // Using location name as ID
-                                                            basin: basin,
-                                                            riverMile: riverMile
-                                                        };
+                                    //                     // Create an output object using the location name as ID
+                                    //                     const outputData = {
+                                    //                         locationId: loc, // Using location name as ID
+                                    //                         basin: basin,
+                                    //                         riverMile: riverMile
+                                    //                     };
 
-                                                        // console.log("Output Data:", outputData);
-                                                        riverMileHardCodedMap.set(loc, ownerData); // Store the data in the map
-                                                    }
-                                                }
-                                            })
-                                            .catch(error => {
-                                                console.error('Problem with the fetch operation:', error);
-                                            });
-                                    })();
+                                    //                     // console.log("Output Data:", outputData);
+                                    //                     riverMileHardCodedMap.set(loc, ownerData); // Store the data in the map
+                                    //                 }
+                                    //             }
+                                    //         })
+                                    //         .catch(error => {
+                                    //             console.error('Problem with the fetch operation:', error);
+                                    //         });
+                                    // })();
 
                                     // river mile data request
                                     (() => {
@@ -855,6 +886,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 Promise.all(apiPromises)
                     .then(() => Promise.all(metadataPromises))
                     .then(() => Promise.all(floodPromises))
+                    .then(() => Promise.all(lwrpPromises))
                     .then(() => Promise.all(stageTsidPromises))
                     .then(() => Promise.all(forecastNwsTsidPromises))
                     .then(() => Promise.all(flowTsidPromises))
@@ -874,7 +906,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     .then(() => Promise.all(phycocyaninTsidPromises))
                     .then(() => Promise.all(speedTsidPromises))
                     .then(() => Promise.all(ownerPromises))
-                    .then(() => Promise.all(riverMileHardCodedPromises))
+                    // .then(() => Promise.all(riverMileHardCodedPromises))
                     .then(() => Promise.all(riverMilePromises))
                     .then(() => {
                         // Update combinedData with location metadata and flood data
@@ -891,6 +923,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                                         const floodMapData = floodMap.get(loc['location-id']);
                                         if (floodMapData) {
                                             loc['flood'] = floodMapData;
+                                        }
+
+                                        const lwrpMapData = lwrpMap.get(loc['location-id']);
+                                        if (lwrpMapData) {
+                                            loc['lwrp'] = lwrpMapData;
                                         }
 
                                         const stageTsidMapData = stageTsidMap.get(loc['location-id']);
@@ -990,10 +1027,10 @@ document.addEventListener('DOMContentLoaded', async function () {
                                             loc['owner'] = ownerMapData;
                                         }
 
-                                        const riverMileHardCodedMapData = riverMileHardCodedMap.get(loc['location-id']);
-                                        if (riverMileHardCodedMapData) {
-                                            loc['river-mile-hard-coded'] = riverMileHardCodedMapData;
-                                        }
+                                        // const riverMileHardCodedMapData = riverMileHardCodedMap.get(loc['location-id']);
+                                        // if (riverMileHardCodedMapData) {
+                                        //     loc['river-mile-hard-coded'] = riverMileHardCodedMapData;
+                                        // }
 
                                         const riverMileMapData = riverMileMap.get(loc['location-id']);
                                         if (riverMileMapData) {
