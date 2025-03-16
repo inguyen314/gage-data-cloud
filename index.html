@@ -61,10 +61,12 @@
 
                     // Determine the default value of cda based on documentRoot
                     let cdaDefault = null;
-                    if (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/` || `http://localhost:5173/` || `https://wm.rsgis.dev/` || `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
+                    if (documentRoot === `https://wm.mvs.ds.usace.army.mil/`) {
                         cdaDefault = "internal";
-                    } else if (documentRoot === `https://wm-${office.toLocaleLowerCase()}coop.mvk.ds.usace.army.mil/`) {
+                    } else if (documentRoot === `https://wm-mvscoop.mvk.ds.usace.army.mil/`) {
                         cdaDefault = "internal-coop";
+                    } else if (documentRoot === `https://www.mvs-wc.usace.army.mil/`) {
+                        cdaDefault = "public";
                     } else {
                         cdaDefault = "public";
                     }
@@ -76,7 +78,7 @@
                     console.log("cda: ", cda);
 
                     // Determine the default value of cda based on documentRoot
-                    const typeDefault = (documentRoot === `https://wm.${office.toLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
+                    const typeDefault = (documentRoot === `https://wm.mvs.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
 
                     var type = urlParams.get('type') || typeDefault;
@@ -90,6 +92,11 @@
 
                     var json = urlParams.get('json') || "true";
                     console.log('json: ', json);
+
+                    let mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                        || window.innerWidth <= 768;
+
+                    console.log("Is this site viewed on mobile?", mobile);
                 </script>
 
                 <!-- Basin Selection -->
@@ -109,11 +116,11 @@
                         tbody.appendChild(tr);
 
                         // Create th elements
-                        for (var i = 0; i < 3; i++) {
-                            var th = document.createElement('th');
-                            th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                            tr.appendChild(th);
-                        }
+                        // for (var i = 0; i < 3; i++) {
+                        //     var th = document.createElement('th');
+                        //     th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        //     tr.appendChild(th);
+                        // }
 
                         let basins = null;
 
@@ -203,11 +210,11 @@
 
 
                                 // Create th elements for remaining spaces
-                                for (var i = 0; i < 2; i++) {
-                                    var th = document.createElement('th');
-                                    th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-                                    tr.appendChild(th);
-                                }
+                                // for (var i = 0; i < 2; i++) {
+                                //     var th = document.createElement('th');
+                                //     th.innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                                //     tr.appendChild(th);
+                                // }
 
                                 // Append table to the container div<strong>May 2024 - Version V2.1</strong> - gage_control3.json was used <br> 
                                 document.getElementById('container').appendChild(table);

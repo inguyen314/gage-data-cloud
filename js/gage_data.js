@@ -1115,8 +1115,8 @@ function createGageDataTable(allData, setBaseUrl) {
     // console.log('currentDateTime:', currentDateTime);
 
     // Subtract two hours from current date and time
-    const currentDateTimeMinus2Hours = subtractHoursFromDate(currentDateTime, 2);
-    // console.log('currentDateTimeMinus2Hours :', currentDateTimeMinus2Hours);
+    const currentDateTimeMinus2Hours = subtractHoursFromDate(currentDateTime, 3);
+    console.log('currentDateTimeMinus2Hours :', currentDateTimeMinus2Hours);
 
     // Subtract two hours from current date and time
     const currentDateTimeMinus8Hours = subtractHoursFromDate(currentDateTime, 8);
@@ -1213,11 +1213,13 @@ function createGageDataTable(allData, setBaseUrl) {
                     // Make the link open in a new tab
                     locationLink.target = '_blank';
                     locationLink.href = `../metadata?office=MVS&type=data&gage=${encodeURIComponent(locData['location-id'])}`;
-                    locationLink.textContent = Math.round(locData.attribute) + " " + locData['location-id'];
+                    // locationLink.textContent = Math.round(locData.attribute) + " " + locData['location-id'];
+                    locationLink.textContent = locData.metadata['public-name'];
 
                     locationCell.appendChild(locationLink); // Append the link to the cell
                 } else {
-                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData['location-id'];
+                    // locationCell.innerHTML = Math.round(locData.attribute) + " " + locData['location-id'];
+                    locationCell.innerHTML = locData.metadata['public-name'];
                 }
             })();
 
@@ -1241,7 +1243,7 @@ function createGageDataTable(allData, setBaseUrl) {
                 let tsidForecastNws = null;
 
                 if (locData.attribute.toString().endsWith('.1')) {
-                    topDiv.innerHTML = "Temporally Removed<br>Loss of Funding";
+                    topDiv.innerHTML = "Temporally Removed";
                 } else {
                     // Check if 'tsid-stage' exists in locData
                     if (locData['tsid-stage']) {
@@ -1282,7 +1284,7 @@ function createGageDataTable(allData, setBaseUrl) {
 
                         for (let i = 0; i < limit; i++) {
                             if (locData.attribute.toString().endsWith('.1')) {
-                                flowCell.innerHTML = "Temporally Removed<br>Loss of Funding";
+                                flowCell.innerHTML = "Temporally Removed";
                             } else {
                                 const { 'timeseries-id': tsidFlow, 'alias-id': tsidFlowLabel } = series[i];
                                 fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlowLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl);
@@ -1298,7 +1300,7 @@ function createGageDataTable(allData, setBaseUrl) {
                 if (locData['tsid-precip']) {
                     if (locData['tsid-precip'][`assigned-time-series`][0]) {
                         if (locData.attribute.toString().endsWith('.1')) {
-                            precipCell.innerHTML = "Temporally Removed<br>Loss of Funding";
+                            precipCell.innerHTML = "Temporally Removed";
                         } else {
                             const tsidPrecip = locData['tsid-precip'][`assigned-time-series`][0][`timeseries-id`];
                             fetchAndUpdatePrecip(precipCell, tsidPrecip, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, setBaseUrl);
@@ -1311,7 +1313,7 @@ function createGageDataTable(allData, setBaseUrl) {
             (() => {
                 const waterQualityCell = row.insertCell();
                 if (locData.attribute.toString().endsWith('.1')) {
-                    waterQualityCell.innerHTML = "Temporally Removed<br>Loss of Funding";
+                    waterQualityCell.innerHTML = "Temporally Removed";
                 } else {
                     if (locData['tsid-temp-air']) {
                         const series = locData['tsid-temp-air']['assigned-time-series'];
@@ -1319,7 +1321,7 @@ function createGageDataTable(allData, setBaseUrl) {
                             series.sort((a, b) => a.attribute - b.attribute);
 
                             // Determine how many series to show based on the value of cda
-                            const limit = (cda === 'public') ? 1 : series.length;
+                            const limit = (cda === 'public') ? 0 : series.length;
 
                             for (let i = 0; i < limit; i++) {
                                 const { 'timeseries-id': tsidTempAir, 'alias-id': tsidTempAirLabel } = series[i];
@@ -1347,7 +1349,7 @@ function createGageDataTable(allData, setBaseUrl) {
                             series.sort((a, b) => a.attribute - b.attribute);
 
                             // Determine how many series to show based on the value of cda
-                            const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
+                            const limit = (cda === 'public') ? 0 : Math.min(4, series.length);
 
                             for (let i = 0; i < limit; i++) {
                                 const { 'timeseries-id': tsidSpeedWind, 'alias-id': tsidSpeedWindLabel } = series[i];
@@ -1361,7 +1363,7 @@ function createGageDataTable(allData, setBaseUrl) {
                             series.sort((a, b) => a.attribute - b.attribute);
 
                             // Determine how many series to show based on the value of cda
-                            const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
+                            const limit = (cda === 'public') ? 0 : Math.min(4, series.length);
 
                             for (let i = 0; i < limit; i++) {
                                 const { 'timeseries-id': tsidDirWind, 'alias-id': tsidDirWindLabel } = series[i];
@@ -1680,6 +1682,9 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                         + "</span>";
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
+                    const displayTime = mobile
+                        ? formattedLastValueTimeStamp.split(' ')[1]
+                        : formattedLastValueTimeStamp;
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
                         + "<a href='../chart?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4' target='_blank'>"
                         + valueLast
@@ -1690,7 +1695,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                         + " (" + "<span title='" + stage.name + ", Value = " + value24HoursLast + ", Date Time = " + timestamp24HoursLast + ", Delta = (" + valueLast + " - " + value24HoursLast + ") = " + delta_24 + "'>" + delta_24 + "</span>" + ")"
                         + "<br>"
                         + "<span class='" + dateTimeClass + "'>"
-                        + formattedLastValueTimeStamp
+                        + displayTime
                         + "</span>";
                 }
                 return stageCell.innerHTML += innerHTMLStage;
@@ -1982,6 +1987,9 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + "label"
                         + "</span>";
                 } else {
+                    const displayTime = mobile
+                        ? formattedLastValueTimeStamp.split(' ')[1]
+                        : formattedLastValueTimeStamp;
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
                         + "<a href='../chart?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=4&cda=internal' target='_blank'>"
                         + roundedValueFlowLast
@@ -1992,7 +2000,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + " (" + "<span title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlow24HoursLast + ", Delta = (" + valueFlowLast + " - " + valueFlow24HoursLast + ") = " + roundedDelta24Flow + "'>" + roundedDelta24Flow + "</span>" + ")"
                         + "<br>"
                         + "<span class='" + dateTimeClass + "'>"
-                        + formattedLastValueTimeStamp
+                        + displayTime
                         + "</span>"
                         + "<span class='" + myFlowLabelClass + "'>"
                         + label
@@ -2224,6 +2232,9 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</tr>"
                         + "</table>";
                 } else {
+                    const displayTime = mobile
+                        ? formattedLastValueTimeStamp.split(' ')[1]
+                        : formattedLastValueTimeStamp;
                     innerHTMLPrecip = "<table id='precip'>"
                         + "<tr>"
                         + "<td class='" + myClass6 + "' title='6 hr delta'>"
@@ -2242,7 +2253,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + " "
                         + precip.units
                         + "<span class='" + dateTimeClass + "'>"
-                        + formattedLastValueTimeStamp
+                        + displayTime
                         + "</span>";
                 }
                 return precipCell.innerHTML += innerHTMLPrecip;
@@ -2398,6 +2409,10 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 var dateTimeClass = determineDateTimeClassWaterQuality(timeStampDateObject, currentDateTimeMinus2Hours, currentDateTimeMinus8Hours, label);
                 // console.log("dateTimeClass:", dateTimeClass);
 
+                let innerHTMLWaterQuality = null;
+                const displayTime = mobile
+                        ? formattedLastValueTimeStamp.split(' ')[1]
+                        : formattedLastValueTimeStamp;
                 if (lastNonNullWaterQualityValue === null) {
                     innerHTMLWaterQuality = "<span class='missing' title='" + waterQuality.name + "'>"
                         + "-M-"
@@ -2416,7 +2431,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + " (" + "<span title='" + waterQuality.name + ", Value = " + valueWaterQuality24HoursLast + ", Date Time = " + timestampWaterQuality24HoursLast + ", Delta = (" + valueWaterQualityLast + " - " + valueWaterQuality24HoursLast + ") = " + delta_24_water_quality + "'>" + delta_24_water_quality + "</span>" + ")"
                         + "<br>"
                         + "<span class='" + dateTimeClass + "'>"
-                        + formattedLastValueTimeStamp
+                        + displayTime
                         + "</span>"
                         + "<span class='" + myWaterQualityClass + "'>"
                         + label
@@ -2432,7 +2447,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + " (" + "<span title='" + waterQuality.name + ", Value = " + valueWaterQuality24HoursLast + ", Date Time = " + timestampWaterQuality24HoursLast + ", Delta = (" + valueWaterQualityLast + " - " + valueWaterQuality24HoursLast + ") = " + delta_24_water_quality + "'>" + delta_24_water_quality + "</span>" + ")"
                         + "<br>"
                         + "<span class='" + dateTimeClass + "'>"
-                        + formattedLastValueTimeStamp
+                        + displayTime
                         + "</span>"
                         + "<span class='" + myWaterQualityClass + "'>"
                         + label
@@ -2748,11 +2763,11 @@ function formatTimestampToStringIOS(timestamp) {
 async function fetchDataFromNwsForecastsOutput() {
     let urlNwsForecast = null;
     if (cda === "public") {
-        urlNwsForecast = `https://www.${office.toLocaleLowerCase()}-wc.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json`;
+        urlNwsForecast = `../../php_data_api/public/json/exportNwsForecasts2Json.json`;
     } else if (cda === "internal") {
-        urlNwsForecast = `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json`;
+        urlNwsForecast = `../../php_data_api/public/json/exportNwsForecasts2Json.json`;
     }
-    // console.log("urlNwsForecast: ", urlNwsForecast);
+    console.log("urlNwsForecast: ", urlNwsForecast);
 
     try {
         const response = await fetch(urlNwsForecast);

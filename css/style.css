@@ -286,26 +286,44 @@ hr {
 /*** ===================================================================================== ***/
 /*** BASIN SELECTOR ***/
 /*** ===================================================================================== ***/
+#basins-container {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling on small screens */
+}
+
 #basins {
     border-collapse: collapse;
     width: 100%;
-}
-#basins th {
-    padding-top: 30px;
-    padding-bottom: 10px;
-    text-align: center;
-}
-#basins td {
-	text-decoration: none;
-}
-#basins td a, #basins th a {
-	color: black;
-	text-decoration: none;
-}
-#basins td a:hover, #basins th a:hover {
-	text-decoration: underline;
+    font-size: 14px; /* Adjust font size for mobile */
 }
 
+#basins th, #basins td {
+    padding: 12px 8px; /* Adjust padding for smaller screens */
+    text-align: center;
+    white-space: nowrap; /* Prevent content from wrapping */
+}
+
+#basins th {
+    background-color: #f1f1f1;
+    font-weight: bold;
+}
+
+#basins td a, #basins th a {
+    color: black;
+    text-decoration: none;
+}
+
+#basins td a:hover, #basins th a:hover {
+    text-decoration: underline;
+}
+
+/* Make font size and padding responsive */
+@media (max-width: 768px) {
+    #basins th, #basins td {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+}
 
 /*** ===================================================================================== ***/
 /*** PRECIP TABLE ***/
@@ -313,23 +331,43 @@ hr {
 #precip_title {
 	width: 100%;
 	margin-top: 20px;
-}
-#precip {
-    border-spacing: 10px; 
 	text-align: center;
-	margin-left:auto; 
-    margin-right:auto;
-
+	font-size: 1.2em;
 }
+
+#precip {
+    width: 100%; /* Make table responsive */
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
 #precip td {
-    color:black; 
-	font-weight:normal; 
-	font-size: 1.0em; 
-	border: 1px solid gray; 
-	padding-top: 2px; 
-	padding-right: 25px; 
-	padding-bottom: 2px; 
-	padding-left: 25px;
+    color: black;
+    font-weight: normal;
+    font-size: 1em;
+    border: 1px solid gray;
+    padding: 8px;
+    text-align: center;
+    white-space: nowrap; /* Prevents text wrapping */
+}
+
+/* Make table scrollable on small screens */
+@media (max-width: 768px) {
+    #precip {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    #precip td {
+        font-size: 0.9em;
+        padding: 6px;
+    }
+
+    #precip_title {
+        font-size: 1em;
+        margin-top: 10px;
+    }
 }
 .precip_missing {
 	background-color: red
