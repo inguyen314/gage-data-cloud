@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     } else if (cda === "internal-coop") {
         setBaseUrl = `https://wm-${office.toLowerCase()}coop.mvk.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`;
     } else if (cda === "public") {
+        // setBaseUrl = `https://cwms-data-test.cwbi.us/cwms-data/`;
         setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
     }
     console.log("setBaseUrl: ", setBaseUrl);
@@ -87,7 +88,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (cda === "internal") {
             apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
         } else if (cda === "public") {
-            apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+            // apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+            apiUrl = `${setBaseUrl}location/group?office=${office}&group-office-id=MVS&category-office-id=MVS&category-id=Basins`; // 2025.03.04-develop
         }
         console.log("apiUrl: ", apiUrl);
 
@@ -133,7 +135,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 if (cda === "internal") {
                     basinApiUrl = `${setBaseUrl}location/group/${basin}?office=${office}&category-id=Basins`;
                 } else if (cda === "public") {
-                    basinApiUrl = `${setBaseUrl}location/group/${basin}?office=${office}&category-id=Basins`;
+                    // basinApiUrl = `${setBaseUrl}location/group/${basin}?office=${office}&category-id=Basins`;
+                    basinApiUrl = `${setBaseUrl}location/group/${basin}?office=MVS&group-office-id=MVS&category-office-id=MVS&category-id=Basins`; // 2025.03.04-develop
                 }
                 // console.log("basinApiUrl: ", basinApiUrl);
 
