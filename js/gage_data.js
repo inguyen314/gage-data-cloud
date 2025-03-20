@@ -1806,43 +1806,36 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                     // // console.log("floodClassDay3:", floodClassDay3);
 
 
-                    if (nws3Days !== null) {
-                        if (firstMiddleValue !== "-M-" && secondMiddleValue !== "-M-" && thirdMiddleValue !== "-M-") {
-                            innerHTMLStage = "<table id='nws'>"
-                                + "<tr>"
-                                + "<td colspan='3' class='day_nws_forecast'>"
-                                + "3 Day NWS Forecast"
-                                + "</td>"
-                                + "</tr>"
-                                + "<tr>"
-                                + "<td class='" + floodClassDay1 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
-                                + firstMiddleValue
-                                + "</a>"
-                                + "</td>"
-                                + "<td class='" + floodClassDay2 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
-                                + secondMiddleValue
-                                + "</a>"
-                                + "</td>"
-                                + "<td class='" + floodClassDay3 + "'>"
-                                + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
-                                + thirdMiddleValue
-                                + "</a>"
-                                + "</td>"
-                                + "</tr>"
-                                // + "<tr>"
-                                // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
-                                // + "</tr>"
-                                + "<table>";
-                        } else {
-                            innerHTMLStage = "";
-                        }
+                    if (nws3Days.values.length !== 0) {
+                        innerHTMLStage = "<table id='nws'>"
+                            + "<tr>"
+                            + "<td colspan='3' class='day_nws_forecast'>"
+                            + "3 Day NWS Forecast"
+                            + "</td>"
+                            + "</tr>"
+                            + "<tr>"
+                            + "<td class='" + floodClassDay1 + "'>"
+                            + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                            + firstMiddleValue
+                            + "</a>"
+                            + "</td>"
+                            + "<td class='" + floodClassDay2 + "'>"
+                            + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                            + secondMiddleValue
+                            + "</a>"
+                            + "</td>"
+                            + "<td class='" + floodClassDay3 + "'>"
+                            + "<a href='../chart?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                            + thirdMiddleValue
+                            + "</a>"
+                            + "</td>"
+                            + "</tr>"
+                            // + "<tr>"
+                            // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
+                            // + "</tr>"
+                            + "<table>";
                     } else {
-                        innerHTMLStage = "<span class='missing'>"
-                            + "-M-"
-                            + "</span>"
-                            + "<span class='day_nws_forecast'>"
+                        innerHTMLStage = "<span class='day_nws_forecast'>"
                             + "NWS 3 Days Forecast"
                             + "</span>";
                     }
