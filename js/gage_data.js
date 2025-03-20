@@ -1217,15 +1217,18 @@ function createGageDataTable(allData, setBaseUrl) {
                     // If the owner's ID is "MVS", set the text color to dark blue
                     locationCell.style.color = 'darkblue';
 
-                    // Create a link with location-id (gage)
-                    const locationLink = document.createElement('a');
-                    // Make the link open in a new tab
-                    locationLink.target = '_blank';
-                    locationLink.href = `../metadata?office=MVS&type=data&gage=${encodeURIComponent(locData['location-id'])}`;
-                    // locationLink.textContent = Math.round(locData.attribute) + " " + locData['location-id'];
-                    locationLink.textContent = locData.metadata['public-name'];
+                    if (cda === "internal") {
+                        // Create a link with location-id (gage) if cda is "internal"
+                        const locationLink = document.createElement('a');
+                        locationLink.target = '_blank';
+                        locationLink.href = `../metadata?office=MVS&type=data&gage=${encodeURIComponent(locData['location-id'])}`;
+                        locationLink.textContent = locData.metadata['public-name'];
 
-                    locationCell.appendChild(locationLink); // Append the link to the cell
+                        locationCell.appendChild(locationLink); // Append the link to the cell
+                    } else {
+                        // Just display the public name if cda is not "internal"
+                        locationCell.textContent = locData.metadata['public-name'];
+                    }
                 } else {
                     // locationCell.innerHTML = Math.round(locData.attribute) + " " + locData['location-id'];
                     locationCell.innerHTML = locData.metadata['public-name'];

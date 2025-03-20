@@ -54,12 +54,12 @@ hr {
 	margin-bottom: 20px;
 }
 .hard_coded {
-	color: black; /* Base text color */
-	text-shadow: 0 0 2px orange;
+	color: darkorange; /* Base text color */
+	/* text-shadow: 0 0 2px orange; */
 }
 .hard_coded_php {
-	color: black; /* Base text color */
-	text-shadow: 0 0 1.5px purple;
+	color: purple; /* Base text color */
+	/* text-shadow: 0 0 1.5px purple; */
 	font-size: 0.9em
 }
 
@@ -267,21 +267,29 @@ hr {
 /*** NWS FORECAST TABLE ***/
 /*** ===================================================================================== ***/
 #nws {
-    border-spacing: 1px; 
-	text-align: center;
-	width: 100%;
-	margin-top: 5px;
-}
-#nws td {
-	border: 1px solid gray; 
-	padding-top: 2px; 
-	padding-right: 15px; 
-	padding-bottom: 2px; 
-	padding-left: 15px;
-	border: none;
-	width: 33.333%;
+    border-spacing: 1px;
+    text-align: center;
+    width: 100%;
+    margin-top: 5px;
+    border-collapse: collapse; /* Ensures consistent spacing */
 }
 
+#nws td {
+    border: 1px solid gray;
+    padding: 2px; /* Increased padding for better touch experience */
+    width: 33.333%;
+    box-sizing: border-box;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #nws td {
+        display: block;
+        width: 100%; /* Stack cells vertically on smaller screens */
+        padding: 2px;
+        border-bottom: 1px solid gray;
+    }
+}
 
 /*** ===================================================================================== ***/
 /*** BASIN SELECTOR ***/
@@ -485,24 +493,4 @@ hr {
 .blinking-text a {
 	color: red;
 	animation: blink 1s infinite;
-}
-
-/*** ===================================================================================== ***/
-/*** ===== MISC ===== ***/
-/*** ===================================================================================== ***/
-.alert {
-	padding: 15px;
-	background-color: #f44336;
-	color: white;
-	text-align: center;
-	margin-top: 20px;
-	margin-bottom: 20px;
-}
-.hard_coded {
-	color: black; /* Base text color */
-	text-shadow: 0 0 1px orange;
-}
-.hard_coded_php {
-	color: black; /* Base text color */
-	text-shadow: 0 0 1px purple;
 }
