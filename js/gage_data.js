@@ -2383,7 +2383,6 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 }
                 // console.log("myWaterQualityClass = ", myWaterQualityClass);
 
-
                 // Get the last non-null value from the stage data
                 const lastNonNullWaterQualityValue = getLastNonNullValue(waterQuality);
                 // console.log("lastNonNullWaterQualityValue = ", lastNonNullWaterQualityValue);
@@ -2423,7 +2422,6 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 const lastNonNull24HoursWaterQualityValue = getLastNonNull24HoursValue(waterQuality, c_count);
                 // console.log("lastNonNull24HoursWaterQualityValue:", lastNonNull24HoursWaterQualityValue);
 
-
                 // Check if a non-null value was found
                 if (lastNonNull24HoursWaterQualityValue !== null) {
                     // Extract timestamp, value, and quality code from the last non-null value
@@ -2462,8 +2460,8 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 
                 let innerHTMLWaterQuality = null;
                 const displayTime = mobile
-                    ? formattedLastValueTimeStamp.split(' ')[1]
-                    : formattedLastValueTimeStamp;
+                    ? timestampWaterQualityLast.split(' ')[1]
+                    : timestampWaterQualityLast;
                 if (lastNonNullWaterQualityValue === null) {
                     innerHTMLWaterQuality = "<span class='missing' title='" + waterQuality.name + "'>"
                         + "-M-"
