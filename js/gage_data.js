@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', async function () {
         setBaseUrl = `https://wm-${office.toLowerCase()}coop.mvk.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`;
     } else if (cda === "public") {
         // setBaseUrl = `https://cwms-data-test.cwbi.us/cwms-data/`;
-        setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
+        // setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
+        setBaseUrl = `https://cwms.sec.usace.army.mil/cwms-data/`;
     }
     console.log("setBaseUrl: ", setBaseUrl);
 
@@ -86,10 +87,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         const riverMilePromises = [];
 
         if (cda === "internal") {
-            apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+            apiUrl = `${setBaseUrl}location/group?office=${office}&group-office-id=MVS&category-office-id=MVS&category-id=Basins`;
         } else if (cda === "public") {
             // apiUrl = `${setBaseUrl}location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
-            apiUrl = `${setBaseUrl}location/group?office=${office}&group-office-id=MVS&category-office-id=MVS&category-id=Basins`; // 2025.03.04-develop
+               apiUrl = `${setBaseUrl}location/group?office=${office}&group-office-id=${office}&category-office-id=${office}&category-id=Basins`; // 2025.03.04-develop
         }
         console.log("apiUrl: ", apiUrl);
 
@@ -1628,7 +1629,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                     var qualityCodeLast = lastNonNullValue.qualityCode;
 
                     // Log the extracted values
-                    console.log("timestampLast:", timestampLast);
+                    // console.log("timestampLast:", timestampLast);
                 } else {
                     console.log("No non-null valueLast found.");
                 }
@@ -1643,7 +1644,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                     dateTimeClass = determineDateTimeClass(timestampLastIsoDate, currentDateTimeMinus2Hours);
                     // console.log("dateTimeClass:", dateTimeClass);
                 }
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 const c_count = calculateCCount(tsidStage);
                 // console.log("c_count:", c_count);
@@ -1674,7 +1675,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
 
                 // Format the last valueLast's timestampLast to a string
                 const formattedLastValueTimeStamp = formatTimestampToStringIOS(timestampLast);
-                console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
+                // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampLast
                 const timeStampDateObject = new Date(timestampLast);
@@ -2109,7 +2110,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     dateTimeClass = determineDateTimeClass(timestampPrecipLastIsoDate, currentDateTimeMinus2Hours);
                     // console.log("dateTimeClass:", dateTimeClass);
                 }
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
 
                 const c_count = calculateCCount(tsid);
@@ -2264,10 +2265,10 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     innerHTMLPrecip = "<table id='precip'>"
                         + "<tr>"
                         + "<td class='precip_missing' title='6 hr delta'>"
-                        + "-M-"
+                        // + "-M-"
                         + "</td>"
                         + "<td class='precip_missing' title='24 hr delta'>"
-                        + "-M-"
+                        // + "-M-"
                         + "</td>"
                         + "</tr>"
                         + "</table>";
@@ -2415,7 +2416,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                     dateTimeClass = determineDateTimeClass(timestampWaterQualityLastIsoDate, currentDateTimeMinus2Hours);
                     // console.log("dateTimeClass:", dateTimeClass);
                 }
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 const c_count = calculateCCount(tsid);
 

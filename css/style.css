@@ -378,7 +378,8 @@ hr {
     }
 }
 .precip_missing {
-	background-color: red
+	background-color: red;
+	color: red;
 }
 .precip_missing_legend {
 	background-color: red;
