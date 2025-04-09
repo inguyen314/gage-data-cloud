@@ -5,13 +5,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     let setBaseUrl = null;
     if (cda === "internal") {
-        setBaseUrl = `https://wm.${office.toLowerCase()}.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`;
+        setBaseUrl = `https://wm.${office.toLowerCase()}.ds.usace.army.mil/${office.toLowerCase()}-data/`;
     } else if (cda === "internal-coop") {
-        setBaseUrl = `https://wm-${office.toLowerCase()}coop.mvk.ds.usace.army.mil:8243/${office.toLowerCase()}-data/`;
+        setBaseUrl = `https://wm-${office.toLowerCase()}coop.mvk.ds.usace.army.mil/${office.toLowerCase()}-data/`;
     } else if (cda === "public") {
-        // setBaseUrl = `https://cwms-data-test.cwbi.us/cwms-data/`;
-        // setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
-        setBaseUrl = `https://cwms.sec.usace.army.mil/cwms-data/`;
+        setBaseUrl = `https://cwms-data.usace.army.mil/cwms-data/`;
+        // setBaseUrl = `https://cwms.sec.usace.army.mil/cwms-data/`;
     }
     console.log("setBaseUrl: ", setBaseUrl);
 
@@ -1988,7 +1987,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     dateTimeClass = determineDateTimeClass(timestampFlowLastIsoDate, currentDateTimeMinus2Hours);
                     // console.log("dateTimeClass:", dateTimeClass);
                 }
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 const c_count = calculateCCount(tsidFlow);
 
@@ -2325,7 +2324,9 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     const displayTime = mobile
                         ? timestampPrecipLast.slice(0, 5) + ' ' + timestampPrecipLast.slice(11) // timestampFlowLast.split(' ')[1]
                         : timestampPrecipLast;
-                    innerHTMLPrecip = "<table id='precip'>"
+                    innerHTMLPrecip = "<div style='text-align: center;'>"
+                        + "<div style='display: inline-block;'>"
+                        + "<table id='precip'>"
                         + "<tr>"
                         + "<td class='" + myClass6 + "' title='6 hr delta'>"
                         + "<span title='" + precip.name + ", Value = " + valuePrecip6HoursLast + ", Date Time = " + timestampPrecip6HoursLast + ", Delta = (" + valuePrecipLast + " - " + valuePrecip6HoursLast + ") = " + precip_delta_6 + "'>" + precip_delta_6 + "</span>"
@@ -2335,6 +2336,8 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</td>"
                         + "</tr>"
                         + "</table>"
+                        + "</div>"
+                        + "<br>"
                         + "<span class='last_max_value' title='" + precip.name + ", Value = " + valuePrecipLast + ", Date Time = " + timestampPrecipLast + "'>"
                         + "<a href='../chart?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=4' target='_blank'>"
                         + valuePrecipLast
@@ -2344,7 +2347,10 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + precip.units
                         + "<span class='" + dateTimeClass + "'>"
                         + displayTime
-                        + "</span>";
+                        + "</span>"
+                        + "</div>";
+
+
                 }
                 return precipCell.innerHTML += innerHTMLPrecip;
             })
