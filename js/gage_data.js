@@ -2324,15 +2324,15 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     const displayTime = mobile
                         ? timestampPrecipLast.slice(0, 5) + ' ' + timestampPrecipLast.slice(11) // timestampFlowLast.split(' ')[1]
                         : timestampPrecipLast;
-                    innerHTMLPrecip = "<div style='text-align: center;'>"
+                        innerHTMLPrecip = "<div style='text-align: center;'>"
                         + "<div style='display: inline-block;'>"
                         + "<table id='precip'>"
                         + "<tr>"
                         + "<td class='" + myClass6 + "' title='6 hr delta'>"
-                        + "<span title='" + precip.name + ", Value = " + valuePrecip6HoursLast + ", Date Time = " + timestampPrecip6HoursLast + ", Delta = (" + valuePrecipLast + " - " + valuePrecip6HoursLast + ") = " + precip_delta_6 + "'>" + precip_delta_6 + "</span>"
+                        + "<span style='padding: 0 10px;' title='" + precip.name + ", Value = " + valuePrecip6HoursLast + ", Date Time = " + timestampPrecip6HoursLast + ", Delta = (" + valuePrecipLast + " - " + valuePrecip6HoursLast + ") = " + precip_delta_6 + "'>" + precip_delta_6 + "</span>"
                         + "</td>"
                         + "<td class='" + myClass24 + "' title='24 hr delta'>"
-                        + "<span title='" + precip.name + ", Value = " + valuePrecip24HoursLast + ", Date Time = " + timestampPrecip24HoursLast + ", Delta = (" + valuePrecipLast + " - " + valuePrecip24HoursLast + ") = " + precip_delta_24 + "'>" + precip_delta_24 + "</span>"
+                        + "<span style='padding: 0 10px;' title='" + precip.name + ", Value = " + valuePrecip24HoursLast + ", Date Time = " + timestampPrecip24HoursLast + ", Delta = (" + valuePrecipLast + " - " + valuePrecip24HoursLast + ") = " + precip_delta_24 + "'>" + precip_delta_24 + "</span>"
                         + "</td>"
                         + "</tr>"
                         + "</table>"
@@ -2349,8 +2349,6 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + displayTime
                         + "</span>"
                         + "</div>";
-
-
                 }
                 return precipCell.innerHTML += innerHTMLPrecip;
             })
