@@ -143,7 +143,7 @@
                                     return;
                                 }
 
-                                console.log('Data fetched:', data);
+                                // console.log('Data fetched:', data);
 
                                 const targetCategory = { "office-id": office, "id": "Basins" };
 
@@ -156,7 +156,7 @@
                                 }
 
                                 const filteredArray = filterByLocationCategory(data, targetCategory);
-                                console.log(filteredArray);
+                                console.log("filteredArray: ", filteredArray);
 
                                 // Extract the "id" values from each object
                                 basins = filteredArray.map(item => item.id);
